@@ -71,7 +71,7 @@ void Renderer::drawRect(const Rect& r, const Colour& c) {
 //draw a rectin world coordinates
 void Renderer::drawWorldRect(const Rect &r, const Colour &c)
 {
-	drawRect(worldToScreen(r),c);
+	drawRect(r,c);
 }
 
 void Renderer::present() { //swap buffers
@@ -83,28 +83,6 @@ void Renderer::clear(const Colour& col) {
 	SDL_RenderClear(sdl_renderer);
 
 }
-Point2D Renderer::worldToScreen(const Point2D &p)
-{
-	float vpTop = viewportBottomLeft.y + viewportSize.h;
-	float x = (p.x - viewportBottomLeft.x)* windowSize.w / viewportSize.w;
-	float y = (vpTop- p.y)* windowSize.h / viewportSize.h;
-	
-	return Point2D(x,y);
-}
-Rect Renderer::worldToScreen(const Rect &r)
-{
-	Point2D p = worldToScreen(r.pos);
-	float sw = r.size.w*(windowSize.w / viewportSize.w);
-	float sh = -r.size.h*(windowSize.h / viewportSize.h);
-
-	return Rect(p,Size2D(sw,sh));
-}
-void Renderer::setViewPort(const Rect &r)
-{
-	viewportBottomLeft = r.pos;
-	viewportSize=r.size;
-}
-
 
 /**Destroys SDL_Window and SDL_Renderer*/
 void Renderer::destroy() {

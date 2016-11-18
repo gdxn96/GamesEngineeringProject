@@ -29,17 +29,7 @@ bool Game::init() {
 	Size2D winSize(800,600);
 
 	//creates our renderer, which looks after drawing and the window
-	renderer.init(winSize,"Simple SDL App");
-
-	//set up the viewport
-	//we want the vp centred on origin and 20 units wide
-	float aspectRatio = winSize.w / winSize.h;
-	float vpWidth = 20;
-	Size2D vpSize(vpWidth, vpWidth /aspectRatio);
-	Point2D vpBottomLeft( -vpSize.w / 2, - vpSize.h / 2);
-
-	Rect vpRect(vpBottomLeft,vpSize);
-	renderer.setViewPort(vpRect);
+	renderer.init(winSize,"A* Threading");
 
 
 	//create some game objects
@@ -93,6 +83,8 @@ void Game::render()
 	for (std::vector<GameObject*>::iterator i = gameObjects.begin(), e= gameObjects.end(); i != e; i++) {
 		(*i)->Render(renderer);
 	}
+
+	renderer.drawRect(Rect(0, 0, 800, 150), Colour(255, 255, 255, 255));
 
 	renderer.present();// display the new frame (swap buffers)
 

@@ -32,10 +32,6 @@ public:
 	void drawWorldRect(const Rect&, const Colour&);
 	void present();
 	void clear(const Colour&);
-	Point2D worldToScreen(const Point2D&);
-	Rect worldToScreen(const Rect&);
-
-	void setViewPort(const Rect&);
 
 	void destroy();
 	~Renderer();
