@@ -56,7 +56,17 @@ bool Renderer::init(const Size2D& winSize,const char* title) {
 	return true;
 }
 
-//draw a rect in pixel coordinates
+void Renderer::drawRectOutline(const Rect& r, const Colour& c)
+{
+	SDL_SetRenderDrawColor(sdl_renderer, c.r, c.g, c.b, c.a);
+	SDL_Rect sr;
+	sr.h = r.size.h;
+	sr.w = r.size.w;
+	sr.x = r.pos.x;
+	sr.y = r.pos.y;
+	SDL_RenderDrawRect(sdl_renderer, &sr);
+}
+
 void Renderer::drawRect(const Rect& r, const Colour& c) {
 	SDL_SetRenderDrawColor(sdl_renderer, c.r, c.g, c.b, c.a);
 	SDL_Rect sr;
@@ -66,12 +76,6 @@ void Renderer::drawRect(const Rect& r, const Colour& c) {
 	sr.y = (int)r.pos.y;
 	SDL_RenderFillRect(sdl_renderer, &sr);
 
-}
-
-//draw a rectin world coordinates
-void Renderer::drawWorldRect(const Rect &r, const Colour &c)
-{
-	drawRect(r,c);
 }
 
 void Renderer::present() { //swap buffers

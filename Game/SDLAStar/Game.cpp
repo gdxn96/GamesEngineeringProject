@@ -8,12 +8,11 @@ using namespace std;
 #include "LTimer.h"
 #include "Game.h"
 
-
 const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 
 
-Game::Game()
+Game::Game() : m_grid(Grid(20, 1080, 1080))
 {
 	pause = false;
 	quit = false;
@@ -26,7 +25,8 @@ Game::~Game()
 
 
 bool Game::init() {	
-	Size2D winSize(800,600);
+	Size2D winSize(1080, 1080);
+	srand(0);
 
 	//creates our renderer, which looks after drawing and the window
 	renderer.init(winSize,"A* Threading");
@@ -83,12 +83,9 @@ void Game::render()
 	for (std::vector<GameObject*>::iterator i = gameObjects.begin(), e= gameObjects.end(); i != e; i++) {
 		(*i)->Render(renderer);
 	}
-
-	renderer.drawRect(Rect(0, 0, 800, 150), Colour(255, 255, 255, 255));
+	m_grid.draw(renderer);
 
 	renderer.present();// display the new frame (swap buffers)
-
-	
 }
 
 /** update and render game entities*/

@@ -46,7 +46,9 @@ void InputManager::ProcessInput()
 			/* Keyboard event */
 			case SDL_KEYDOWN:
 				switch (e.key.keysym.sym) {
-
+				case SDLK_ESCAPE:
+					Dispatch(EventListener::Event::QUIT);
+					break;
 				}
 				break;
 

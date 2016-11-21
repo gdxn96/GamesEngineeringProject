@@ -28,8 +28,8 @@ class Renderer{
 public:
 	Renderer();
 	bool init(const Size2D&, const char*);
+	void drawRectOutline(const Rect & r, const Colour & c);
 	void drawRect(const Rect&, const Colour&);
-	void drawWorldRect(const Rect&, const Colour&);
 	void present();
 	void clear(const Colour&);
 

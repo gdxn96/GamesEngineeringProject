@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "InputManager.h"
 #include "EventListener.h"
+#include "Grid.h"
 
 /** The game objct whic manages the game loop*/
 class Game:public EventListener
@@ -19,6 +20,8 @@ class Game:public EventListener
 
 	bool pause;
 	bool quit;
+
+	Grid m_grid;
 
 public:
 	Game();
