@@ -1,22 +1,22 @@
 #include "stdafx.h"
 #include "Tile.h"
 
-Tile::Tile(float x, float y, float size, bool marked) : m_x(x), m_y(y), m_marked(marked), m_size(size)
+Tile::Tile(float x, float y, float size, bool marked) : m_x(x), m_y(y), m_isOccupied(marked), m_size(size), m_colour(255, 255, 255, 255)
 {
 }
 
-void Tile::setMarked(bool marked)
+void Tile::isOccupied(bool marked)
 {
 	m_lock.lock();
-	m_marked = marked; //critical section
+	m_isOccupied = marked; //critical section
 	m_lock.unlock();
 }
 
-bool Tile::getMarked()
+bool Tile::isOccupied()
 {
 	bool marked;
 	m_lock.lock();
-	marked = m_marked; //critical section
+	marked = m_isOccupied; //critical section
 	m_lock.unlock();
 	return marked;
 }
@@ -28,5 +28,21 @@ std::pair<float, float> Tile::getPosition()
 
 void Tile::draw(Renderer & r)
 {
-	r.drawRectOutline(Rect(m_x, m_y, m_size, m_size), Colour(255, 255, 255, 255));
+	m_lock.lock();
+	if (!m_isOccupied)
+	{
+		r.drawRectOutline(Rect(m_x, m_y, m_size, m_size), m_colour);
+	}
+	else
+	{
+		r.drawRect(Rect(m_x, m_y, m_size, m_size), m_colour);
+	}
+	m_lock.unlock();
+}
+
+void Tile::setColour(Colour c)
+{
+	m_lock.lock();
+	m_colour = c; //critical section
+	m_lock.unlock();
 }
