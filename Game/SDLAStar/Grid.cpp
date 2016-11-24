@@ -66,7 +66,7 @@ void Grid::addWalls()
 				{
 					tile->isOccupied(true);
 				}
-				else if (m_wallsTouching != edgesMet)
+				else if (m_wallsTouching != edgesMet && column % 3 == 0)
 				{
 					tile->isOccupied(true);
 					edgesMet++;

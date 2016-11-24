@@ -12,7 +12,7 @@ const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 
 
-Game::Game() : m_grid(Grid(30, 1080, 1080))
+Game::Game() : m_grid(Grid(1000, 1080, 1080))
 {
 	quit = false;
 	m_grid.addWalls();
