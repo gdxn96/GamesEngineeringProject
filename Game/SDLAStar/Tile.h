@@ -1,6 +1,6 @@
 #pragma once
-#include <mutex>
 #include "Renderer.h"
+#include <mutex>
 
 class Tile
 {
@@ -14,7 +14,7 @@ public:
 private:
 	float m_x, m_y;
 	bool m_isOccupied;
-	std::mutex m_lock;
+	SDL_mutex* m_lock;
 	float m_size;
 	Colour m_colour;
 };

@@ -1,23 +1,23 @@
 #include "stdafx.h"
 #include "Tile.h"
 
-Tile::Tile(float x, float y, float size, bool marked) : m_x(x), m_y(y), m_isOccupied(marked), m_size(size), m_colour(255, 255, 255, 255)
+Tile::Tile(float x, float y, float size, bool marked) : m_x(x), m_y(y), m_isOccupied(marked), m_size(size), m_colour(255, 255, 255, 255), m_lock(SDL_CreateMutex())
 {
 }
 
 void Tile::isOccupied(bool marked)
 {
-	m_lock.lock();
+	SDL_LockMutex(m_lock);
 	m_isOccupied = marked; //critical section
-	m_lock.unlock();
+	SDL_UnlockMutex(m_lock);
 }
 
 bool Tile::isOccupied()
 {
 	bool marked;
-	m_lock.lock();
+	SDL_LockMutex(m_lock);
 	marked = m_isOccupied; //critical section
-	m_lock.unlock();
+	SDL_UnlockMutex(m_lock);
 	return marked;
 }
 
@@ -28,7 +28,7 @@ std::pair<float, float> Tile::getPosition()
 
 void Tile::draw(Renderer & r)
 {
-	m_lock.lock();
+	SDL_LockMutex(m_lock);
 	if (!m_isOccupied)
 	{
 		r.drawRectOutline(Rect(m_x, m_y, m_size, m_size), m_colour);
@@ -37,12 +37,12 @@ void Tile::draw(Renderer & r)
 	{
 		r.drawRect(Rect(m_x, m_y, m_size, m_size), m_colour);
 	}
-	m_lock.unlock();
+	SDL_UnlockMutex(m_lock);
 }
 
 void Tile::setColour(Colour c)
 {
-	m_lock.lock();
+	SDL_LockMutex(m_lock);
 	m_colour = c; //critical section
-	m_lock.unlock();
+	SDL_UnlockMutex(m_lock);
 }

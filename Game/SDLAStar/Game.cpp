@@ -7,6 +7,7 @@ using namespace std;
 
 #include "LTimer.h"
 #include "Game.h"
+#include "TaskQueue.h"
 
 const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
@@ -27,6 +28,7 @@ Game::~Game()
 bool Game::init() {	
 	Size2D winSize(1080, 1080);
 	srand(0);
+	TaskQueue::getInstance()->spawnWorkers();
 
 	//creates our renderer, which looks after drawing and the window
 	renderer.init(winSize,"A* Threading");
@@ -99,8 +101,7 @@ void Game::loop()
 
 		inputManager.ProcessInput();
 
-		if(!pause) //in pause mode don't bother updateing
-			update();
+		update();
 		render();
 
 		int frameTicks = capTimer.getTicks();//time since start of frame
