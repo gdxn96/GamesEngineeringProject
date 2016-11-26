@@ -20,7 +20,7 @@ void Grid::printPercentage(int percentage)
 
 Grid::Grid(int numRC, float width, float height) : m_numRowsColumns(numRC)
 {
-	cout << "000%";
+	cout << "Loading Tiles...000%";
 	m_tileSize = width / numRC;
 	for (int i = 0; i < numRC; i++)
 	{		
@@ -28,7 +28,7 @@ Grid::Grid(int numRC, float width, float height) : m_numRowsColumns(numRC)
 		for (int j = 0; j < numRC; j++)
 		{
 			printPercentage(int(100 * (m_tiles.size() + 1) / static_cast<float>(numRC * numRC)));
-			Tile * temp = new Tile(j * m_tileSize, i * m_tileSize, m_tileSize, false);
+			Tile * temp = new Tile(std::pair<int, int>(j, i),j * m_tileSize, i * m_tileSize, m_tileSize, false);
 			m_grid[i].push_back(temp);
 			m_tiles.push_back(temp);
 		}
@@ -87,7 +87,7 @@ void Grid::addWalls()
 	int row = 0;
 	int edgesMet = 0;
 	int i = 0;
-	cout << "000%";
+	cout << "Loading Walls...000%";
 
 	for (auto& tile : m_tiles)
 	{
@@ -117,4 +117,32 @@ void Grid::addWalls()
 	}
 
 	cout << endl;
+}
+
+int Grid::cost(Tile * t1, Tile * t2) const
+{
+	return 1;
+}
+
+bool Grid::passable(int r, int c) const
+{
+	return !m_grid[r][c]->isOccupied();
+}
+
+bool Grid::inBounds(int r, int c) const
+{
+	return r < m_numRowsColumns && c < m_numRowsColumns && r >= 0 && c >= 0;
+}
+
+vector<Tile*> Grid::neighbours(Tile * t) const
+{
+	vector<Tile*> results;
+	auto& i = t->getIndex();
+	for (auto dir : dirs) {
+		std::pair<int, int> next(i.first + dir.first, i.second + dir.second);
+		if (inBounds(next.first, next.second) && passable(next.first, next.second)) {
+			results.push_back(m_grid[next.first][next.second]);
+		}
+	}
+	return results;
 }

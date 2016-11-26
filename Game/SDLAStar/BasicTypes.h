@@ -2,8 +2,6 @@
 #include <cmath>
 
 //Define some basic types needed for 2D graphics
-
-
 class Point2D {
 public:
 	float x, y;
@@ -18,6 +16,11 @@ public:
 	Point2D& operator/(float scale)
 	{
 		return Point2D(this->x / scale, this->y / scale);
+	}
+
+	inline bool operator==(const Point2D& p2)
+	{
+		return (this->x == p2.x && this->y == p2.y);
 	}
 };
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Tile.h"
 
-Tile::Tile(float x, float y, float size, bool marked) : m_x(x), m_y(y), m_isOccupied(marked), m_size(size), m_colour(255, 255, 255, 255), m_lock(SDL_CreateMutex())
+Tile::Tile(std::pair<int, int> index, float x, float y, float size, bool marked) : m_x(x), m_y(y), m_isOccupied(marked), m_size(size), m_index(index), m_colour(255, 255, 255, 255), m_lock(SDL_CreateMutex())
 {
 }
 
@@ -45,4 +45,9 @@ void Tile::setColour(Colour c)
 	SDL_LockMutex(m_lock);
 	m_colour = c; //critical section
 	SDL_UnlockMutex(m_lock);
+}
+
+std::pair<int, int> Tile::getIndex()
+{
+	return m_index;
 }

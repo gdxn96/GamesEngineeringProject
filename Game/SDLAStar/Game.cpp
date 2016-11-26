@@ -8,6 +8,7 @@ using namespace std;
 #include "LTimer.h"
 #include "Game.h"
 #include "TaskQueue.h"
+#include "Astar.h"
 
 const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
@@ -15,15 +16,25 @@ const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 void Game::resetWorld(int numNPCs, int gridSize, float scale)
 {
 	cout << "Resetting World..." << endl;
-	cout << "Loading Tiles...";
 	m_grid = Grid(gridSize, m_worldSize.w, m_worldSize.h);
-	cout << "Loading Walls...";
 	m_grid.addWalls();
 	delete m_camera;
 	m_camera = new Camera2D(Rect(0, 0, m_screenSize.w, m_screenSize.h), scale);
 	m_camera->setLevelSize(Size2D(m_worldSize.w, m_worldSize.h));
 	renderer.setNewCamera(m_camera);
 	cout << gridSize << "x" << gridSize << " World loaded" << endl << endl;
+
+
+	std::unordered_map<Tile*, Tile*> qqq = unordered_map<Tile*, Tile*>();
+	std::unordered_map<Tile*, float> www = unordered_map<Tile*, float>();
+	const Grid gridCopy = m_grid;
+	AStar(gridCopy, m_grid.getTopLeft(), m_grid.getBottomRight(), qqq, www);
+	vector<Tile*> path = reconstruct_path(m_grid.getTopLeft(), m_grid.getBottomRight(), qqq);
+
+	for (auto& tile : path)
+	{
+		tile->setColour(Colour(255, 0, 0, 255));
+	}
 }
 
 Game::Game(Size2D screenSize, Size2D worldSize) : m_grid(Grid(30, worldSize.w, worldSize.h)), m_prevGrid(0), m_camera(new Camera2D(Rect(0, 0, screenSize.w, screenSize.h), 1)), m_screenSize(screenSize), m_worldSize(worldSize)
