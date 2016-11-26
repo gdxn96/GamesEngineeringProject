@@ -57,6 +57,11 @@ bool Renderer::init(const Size2D& winSize,const char* title, Camera2D* cam) {
 	return true;
 }
 
+void Renderer::setNewCamera(Camera2D * newCam)
+{
+	m_camera = newCam;
+}
+
 void Renderer::drawRectOutline(const Rect& r, const Colour& c)
 {
 	Rect tRect = cameraTransform(r);

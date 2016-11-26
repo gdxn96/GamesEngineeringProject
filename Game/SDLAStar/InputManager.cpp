@@ -67,6 +67,9 @@ void InputManager::ProcessInput()
 				case SDLK_DOWN:
 					Dispatch(EventListener::Event::ZOOM_OUT);
 					break;
+				case SDLK_SPACE:
+					Dispatch(EventListener::Event::CHANGE_GRID);
+					break;
 
 				}
 				break;

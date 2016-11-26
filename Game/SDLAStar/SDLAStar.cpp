@@ -11,7 +11,7 @@ using namespace std;
 
 int main()
 {
-	Game game;
+	Game game(Size2D(1080, 1080), Size2D(1080, 1080));
 
 	cout << "Initialising Game" << endl;
 

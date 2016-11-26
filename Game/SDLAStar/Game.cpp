@@ -12,12 +12,25 @@ using namespace std;
 const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 
+void Game::resetWorld(int numNPCs, int gridSize, float scale)
+{
+	cout << "Resetting World..." << endl;
+	cout << "Loading Tiles...";
+	m_grid = Grid(gridSize, m_worldSize.w, m_worldSize.h);
+	cout << "Loading Walls...";
+	m_grid.addWalls();
+	delete m_camera;
+	m_camera = new Camera2D(Rect(0, 0, m_screenSize.w, m_screenSize.h), scale);
+	m_camera->setLevelSize(Size2D(m_worldSize.w, m_worldSize.h));
+	renderer.setNewCamera(m_camera);
+	cout << gridSize << "x" << gridSize << " World loaded" << endl << endl;
+}
 
-Game::Game() : m_grid(Grid(1000, 1080, 1080)), m_camera(new Camera2D(Rect(0, 0, 800, 600)))
+Game::Game(Size2D screenSize, Size2D worldSize) : m_grid(Grid(30, worldSize.w, worldSize.h)), m_prevGrid(0), m_camera(new Camera2D(Rect(0, 0, screenSize.w, screenSize.h), 1)), m_screenSize(screenSize), m_worldSize(worldSize)
 {
 	quit = false;
 	m_grid.addWalls();
-	m_camera->setLevelSize(Size2D(1080, 1080));
+	m_camera->setLevelSize(Size2D(worldSize.w, worldSize.h));
 }
 
 
@@ -27,7 +40,7 @@ Game::~Game()
 
 
 bool Game::init() {	
-	Size2D winSize(m_camera->getViewport().size.w, m_camera->getViewport().size.h);
+	Size2D winSize(m_screenSize.w, m_screenSize.h);
 	srand(0);
 	TaskQueue::getInstance()->spawnWorkers();
 
@@ -51,7 +64,7 @@ bool Game::init() {
 	inputManager.AddListener(EventListener::Event::RIGHT, this);
 	inputManager.AddListener(EventListener::Event::ZOOM_IN, this);
 	inputManager.AddListener(EventListener::Event::ZOOM_OUT, this);
-
+	inputManager.AddListener(EventListener::Event::CHANGE_GRID, this);
 	return true;
 
 }
@@ -121,7 +134,6 @@ void Game::loop()
 }
 
 void Game::onEvent(EventListener::Event evt) {
-	cout << evt << endl;
 	switch (evt)
 	{
 	case(EventListener::Event::QUIT):
@@ -144,6 +156,23 @@ void Game::onEvent(EventListener::Event evt) {
 		break;
 	case(EventListener::Event::ZOOM_OUT):
 		m_camera->decreaseScale();
+		break;
+	case(EventListener::Event::CHANGE_GRID):
+		switch (m_prevGrid)
+		{
+		case(0):
+			resetWorld(0, 100, 3);
+			m_prevGrid = 1;
+			break;
+		case(1):
+			resetWorld(0, 1000, 30);
+			m_prevGrid = 2;
+			break;
+		case(2):
+			resetWorld(0, 30, 1);
+			m_prevGrid = 0;
+			break;
+		}
 		break;
 	default:
 		break;

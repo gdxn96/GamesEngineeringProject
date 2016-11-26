@@ -4,7 +4,7 @@
 class Camera2D
 {
 public:
-	Camera2D(Rect viewPort);
+	Camera2D(Rect viewPort, float initScale);
 	Rect getViewport();
 	float getScale();
 

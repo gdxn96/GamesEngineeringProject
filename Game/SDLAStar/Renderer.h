@@ -29,6 +29,7 @@ class Renderer{
 public:
 	Renderer();
 	bool init(const Size2D&, const char*, Camera2D* cam);
+	void setNewCamera(Camera2D * newCam);
 	void drawRectOutline(const Rect & r, const Colour & c);
 	void drawRect(const Rect&, const Colour&);
 	void present();

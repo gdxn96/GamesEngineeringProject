@@ -24,9 +24,14 @@ class Game:public EventListener
 
 	Grid m_grid;
 	Camera2D * m_camera;
+	Size2D m_screenSize;
+	Size2D m_worldSize;
+	int m_prevGrid;
+
+	void resetWorld(int numNPCs, int gridSize, float scale);
 
 public:
-	Game();
+	Game(Size2D screenSize, Size2D worldSize);
 	~Game();
 
 	bool init();

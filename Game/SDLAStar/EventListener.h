@@ -16,7 +16,8 @@ public:
 		LEFT,
 		RIGHT,
 		ZOOM_IN,
-		ZOOM_OUT
+		ZOOM_OUT,
+		CHANGE_GRID
 	};
 
 

@@ -29,6 +29,7 @@ private:
 
 static int worker(void* ptr)
 {
+	srand(0);
 	TaskQueue * taskQueue = TaskQueue::getInstance();
 	SDL_mutex * lock = taskQueue->getLock();
 	SDL_cond * canConsume = taskQueue->canConsume();

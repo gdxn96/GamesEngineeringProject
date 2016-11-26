@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Camera2D.h"
 
-Camera2D::Camera2D(Rect viewPort) : m_viewPort(viewPort), m_scale(10), m_scaleUnit(0.1f), m_moveUnit(5), m_levelSize(Size2D(1, 1))
+Camera2D::Camera2D(Rect viewPort, float initScale) : m_viewPort(viewPort), m_scale(initScale), m_scaleUnit(0.1f), m_moveUnit(5), m_levelSize(Size2D(1, 1))
 {
 }
 
