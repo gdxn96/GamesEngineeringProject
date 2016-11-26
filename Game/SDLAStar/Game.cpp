@@ -13,10 +13,11 @@ const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 
 
-Game::Game() : m_grid(Grid(1000, 1080, 1080))
+Game::Game() : m_grid(Grid(1000, 1080, 1080)), m_camera(new Camera2D(Rect(0, 0, 800, 600)))
 {
 	quit = false;
 	m_grid.addWalls();
+	m_camera->setLevelSize(Size2D(1080, 1080));
 }
 
 
@@ -26,12 +27,12 @@ Game::~Game()
 
 
 bool Game::init() {	
-	Size2D winSize(1080, 1080);
+	Size2D winSize(m_camera->getViewport().size.w, m_camera->getViewport().size.h);
 	srand(0);
 	TaskQueue::getInstance()->spawnWorkers();
 
 	//creates our renderer, which looks after drawing and the window
-	renderer.init(winSize,"A* Threading");
+	renderer.init(winSize,"A* Threading", m_camera);
 
 
 	//create some game objects
@@ -44,6 +45,12 @@ bool Game::init() {
 	//inputManager.AddListener(EventListener::Event::EXAMPLE, EventListener);
 
 	inputManager.AddListener(EventListener::Event::QUIT, this);
+	inputManager.AddListener(EventListener::Event::UP, this);
+	inputManager.AddListener(EventListener::Event::DOWN, this);
+	inputManager.AddListener(EventListener::Event::LEFT, this);
+	inputManager.AddListener(EventListener::Event::RIGHT, this);
+	inputManager.AddListener(EventListener::Event::ZOOM_IN, this);
+	inputManager.AddListener(EventListener::Event::ZOOM_OUT, this);
 
 	return true;
 
@@ -85,7 +92,7 @@ void Game::render()
 	for (std::vector<GameObject*>::iterator i = gameObjects.begin(), e= gameObjects.end(); i != e; i++) {
 		(*i)->Render(renderer);
 	}
-	m_grid.draw(renderer);
+	m_grid.draw(renderer, m_camera);
 
 	renderer.present();// display the new frame (swap buffers)
 }
@@ -114,9 +121,32 @@ void Game::loop()
 }
 
 void Game::onEvent(EventListener::Event evt) {
-		
-	if (evt == EventListener::Event::QUIT) {
-		quit=true;
+	cout << evt << endl;
+	switch (evt)
+	{
+	case(EventListener::Event::QUIT):
+		quit = true;
+		break;
+	case(EventListener::Event::LEFT):
+		m_camera->MoveLeft();
+		break;
+	case(EventListener::Event::RIGHT):
+		m_camera->MoveRight();
+		break;
+	case(EventListener::Event::UP):
+		m_camera->MoveUp();
+		break;
+	case(EventListener::Event::DOWN):
+		m_camera->MoveDown();
+		break;
+	case(EventListener::Event::ZOOM_IN):
+		m_camera->increaseScale();
+		break;
+	case(EventListener::Event::ZOOM_OUT):
+		m_camera->decreaseScale();
+		break;
+	default:
+		break;
 	}
 
 }

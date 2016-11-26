@@ -6,7 +6,7 @@
 #include "SDL.h"
 #endif
 
-
+#include "Camera2D.h"
 #include "BasicTypes.h"
 
 
@@ -24,14 +24,16 @@ class Renderer{
 
 	SDL_Window *window;
 	SDL_Renderer *sdl_renderer;
+	Camera2D * m_camera;
 
 public:
 	Renderer();
-	bool init(const Size2D&, const char*);
+	bool init(const Size2D&, const char*, Camera2D* cam);
 	void drawRectOutline(const Rect & r, const Colour & c);
 	void drawRect(const Rect&, const Colour&);
 	void present();
 	void clear(const Colour&);
+	Rect cameraTransform(Rect r);
 
 	void destroy();
 	~Renderer();

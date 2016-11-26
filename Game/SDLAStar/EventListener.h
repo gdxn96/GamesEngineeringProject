@@ -10,7 +10,13 @@ public:
 	//list of possible events
 	//add your own events here
 	enum Event {
-		QUIT
+		QUIT,
+		UP, 
+		DOWN,
+		LEFT,
+		RIGHT,
+		ZOOM_IN,
+		ZOOM_OUT
 	};
 
 

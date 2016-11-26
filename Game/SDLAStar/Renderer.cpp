@@ -19,8 +19,9 @@ Renderer::Renderer():sdl_renderer(NULL)
 	
 }
 
-bool Renderer::init(const Size2D& winSize,const char* title) {
+bool Renderer::init(const Size2D& winSize,const char* title, Camera2D* cam) {
 
+	m_camera = cam;
 	int e=SDL_Init(SDL_INIT_EVERYTHING);              // Initialize SDL2
 	windowSize = winSize;
 	if (e != 0) {
@@ -31,11 +32,11 @@ bool Renderer::init(const Size2D& winSize,const char* title) {
 
 	// Create an application window with the following settings:
 	window = SDL_CreateWindow(
-		title,                  // window title
+		title,							   // window title
 		SDL_WINDOWPOS_UNDEFINED,           // initial x position
 		SDL_WINDOWPOS_UNDEFINED,           // initial y position
-		(int)winSize.w,                              // width, in pixels
-		(int)winSize.h,                               // height, in pixels
+		(int)winSize.w,                    // width, in pixels
+		(int)winSize.h,                    // height, in pixels
 		SDL_WINDOW_OPENGL                  // flags - see below
 	);
 
@@ -58,22 +59,24 @@ bool Renderer::init(const Size2D& winSize,const char* title) {
 
 void Renderer::drawRectOutline(const Rect& r, const Colour& c)
 {
+	Rect tRect = cameraTransform(r);
 	SDL_SetRenderDrawColor(sdl_renderer, c.r, c.g, c.b, c.a);
 	SDL_Rect sr;
-	sr.h = r.size.h;
-	sr.w = r.size.w;
-	sr.x = r.pos.x;
-	sr.y = r.pos.y;
+	sr.h = tRect.size.h;
+	sr.w = tRect.size.w;
+	sr.x = tRect.pos.x;
+	sr.y = tRect.pos.y;
 	SDL_RenderDrawRect(sdl_renderer, &sr);
 }
 
 void Renderer::drawRect(const Rect& r, const Colour& c) {
+	Rect tRect = cameraTransform(r);
 	SDL_SetRenderDrawColor(sdl_renderer, c.r, c.g, c.b, c.a);
 	SDL_Rect sr;
-	sr.h = (int)r.size.h;
-	sr.w = (int)r.size.w;
-	sr.x = (int)r.pos.x;
-	sr.y = (int)r.pos.y;
+	sr.h = tRect.size.h;
+	sr.w = tRect.size.w;
+	sr.x = tRect.pos.x;
+	sr.y = tRect.pos.y;
 	SDL_RenderFillRect(sdl_renderer, &sr);
 
 }
@@ -86,6 +89,14 @@ void Renderer::clear(const Colour& col) {
 	SDL_SetRenderDrawColor(sdl_renderer, col.r, col.g, col.b, col.a);
 	SDL_RenderClear(sdl_renderer);
 
+}
+
+Rect Renderer::cameraTransform(Rect r)
+{
+	r = r * m_camera->getScale();
+	r.pos.x -= m_camera->getViewport().pos.x;
+	r.pos.y -= m_camera->getViewport().pos.y;
+	return r;
 }
 
 /**Destroys SDL_Window and SDL_Renderer*/

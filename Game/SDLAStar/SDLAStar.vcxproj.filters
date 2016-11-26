@@ -36,9 +36,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BasicTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -52,6 +49,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TaskQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TaskQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

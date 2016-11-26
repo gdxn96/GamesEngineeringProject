@@ -7,6 +7,7 @@
 #include "InputManager.h"
 #include "EventListener.h"
 #include "Grid.h"
+#include "Camera2D.h"
 
 /** The game objct whic manages the game loop*/
 class Game:public EventListener
@@ -22,6 +23,7 @@ class Game:public EventListener
 	bool quit;
 
 	Grid m_grid;
+	Camera2D * m_camera;
 
 public:
 	Game();

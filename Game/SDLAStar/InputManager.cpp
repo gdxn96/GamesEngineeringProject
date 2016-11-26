@@ -49,6 +49,25 @@ void InputManager::ProcessInput()
 				case SDLK_ESCAPE:
 					Dispatch(EventListener::Event::QUIT);
 					break;
+				case SDLK_w:
+					Dispatch(EventListener::Event::UP);
+					break;
+				case SDLK_a:
+					Dispatch(EventListener::Event::LEFT);
+					break;
+				case SDLK_s:
+					Dispatch(EventListener::Event::DOWN);
+					break;
+				case SDLK_d:
+					Dispatch(EventListener::Event::RIGHT);
+					break;
+				case SDLK_UP:
+					Dispatch(EventListener::Event::ZOOM_IN);
+					break;
+				case SDLK_DOWN:
+					Dispatch(EventListener::Event::ZOOM_OUT);
+					break;
+
 				}
 				break;
 
