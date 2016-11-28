@@ -28,7 +28,7 @@ Grid::Grid(int numRC, float width, float height) : m_numRowsColumns(numRC)
 		for (int j = 0; j < numRC; j++)
 		{
 			printPercentage(int(100 * (m_tiles.size() + 1) / static_cast<float>(numRC * numRC)));
-			Tile * temp = new Tile(std::pair<int, int>(j, i),j * m_tileSize, i * m_tileSize, m_tileSize, false);
+			Tile * temp = new Tile(std::pair<int, int>(i, j),j * m_tileSize, i * m_tileSize, m_tileSize, false);
 			m_grid[i].push_back(temp);
 			m_tiles.push_back(temp);
 		}
@@ -121,7 +121,7 @@ void Grid::addWalls()
 
 int Grid::cost(Tile * t1, Tile * t2) const
 {
-	return 1;
+	return 5;
 }
 
 bool Grid::passable(int r, int c) const

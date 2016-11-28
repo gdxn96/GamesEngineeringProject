@@ -30,6 +30,7 @@ public:
 	{
 		return m_grid[m_numRowsColumns - 1][ m_numRowsColumns - 1];
 	}
+	void printPercentage(int percentage);
 
 private:
 	vector<vector<Tile *>> m_grid;
@@ -44,5 +45,5 @@ private:
 	vector<std::pair<int, int>> dirs = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
 
 	int m_prevPercentage;
-	void printPercentage(int percentage);
+	
 };

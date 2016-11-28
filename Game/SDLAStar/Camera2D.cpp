@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Camera2D.h"
 
-Camera2D::Camera2D(Rect viewPort, float initScale) : m_viewPort(viewPort), m_scale(initScale), m_scaleUnit(0.1f), m_moveUnit(5), m_levelSize(Size2D(1, 1))
+Camera2D::Camera2D(Rect viewPort, float initScale) : m_viewPort(viewPort), m_scale(initScale), m_scaleUnit(1.1f), m_moveUnit(5), m_levelSize(Size2D(1, 1))
 {
 }
 
@@ -17,25 +17,25 @@ float Camera2D::getScale()
 
 void Camera2D::MoveLeft()
 {
-	m_viewPort.pos.x -= m_moveUnit *m_scale;
+	m_viewPort.pos.x -= m_moveUnit * m_scale;
 	limitValues();
 }
 
 void Camera2D::MoveRight()
 {
-	m_viewPort.pos.x += m_moveUnit *m_scale;
+	m_viewPort.pos.x += m_moveUnit * m_scale;
 	limitValues();
 }
 
 void Camera2D::MoveUp()
 {
-	m_viewPort.pos.y -= m_moveUnit *m_scale;
+	m_viewPort.pos.y -= m_moveUnit * m_scale;
 	limitValues();
 }
 
 void Camera2D::MoveDown()
 {
-	m_viewPort.pos.y += m_moveUnit *m_scale;
+	m_viewPort.pos.y += m_moveUnit * m_scale;
 	limitValues();
 }
 
@@ -44,7 +44,7 @@ void Camera2D::increaseScale()
 	Point2D centre(m_viewPort.getCentreCopy());
 	centre = centre / m_scale;
 
-	m_scale += m_scaleUnit;
+	m_scale *= m_scaleUnit;
 
 	centre = centre * m_scale;
 	m_viewPort.pos.x = centre.x - (m_viewPort.size.w / 2);
@@ -57,7 +57,7 @@ void Camera2D::decreaseScale()
 	Point2D centre(m_viewPort.getCentreCopy());
 	centre = centre / m_scale;
 
-	m_scale -= m_scaleUnit;
+	m_scale /= m_scaleUnit;
 	if (m_scale < 1)
 	{
 		m_scale = 1;

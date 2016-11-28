@@ -25,11 +25,11 @@ void Game::resetWorld(int numNPCs, int gridSize, float scale)
 	cout << gridSize << "x" << gridSize << " World loaded" << endl << endl;
 
 
-	std::unordered_map<Tile*, Tile*> qqq = unordered_map<Tile*, Tile*>();
-	std::unordered_map<Tile*, float> www = unordered_map<Tile*, float>();
+	std::unordered_map<Tile*, Tile*> cameFrom = unordered_map<Tile*, Tile*>();
+	std::unordered_map<Tile*, float> costSoFar = unordered_map<Tile*, float>();
 	const Grid gridCopy = m_grid;
-	AStar(gridCopy, m_grid.getTopLeft(), m_grid.getBottomRight(), qqq, www);
-	vector<Tile*> path = reconstruct_path(m_grid.getTopLeft(), m_grid.getBottomRight(), qqq);
+	AStar(gridCopy, m_grid.getTopLeft(), m_grid.getBottomRight(), cameFrom, costSoFar);
+	vector<Tile*> path = reconstruct_path(m_grid.getTopLeft(), m_grid.getBottomRight(), cameFrom);
 
 	for (auto& tile : path)
 	{

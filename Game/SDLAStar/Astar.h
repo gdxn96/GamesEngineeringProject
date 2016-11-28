@@ -7,7 +7,7 @@
 
 using namespace std;
 
-inline float heuristic(Tile* a, Tile* b) 
+inline int heuristic(Tile* a, Tile* b) 
 {
 	return abs(b->getPosition().first - a->getPosition().first) + abs(b->getPosition().first - a->getPosition().second);
 }
@@ -73,6 +73,7 @@ void AStar(const Grid& graph,
 		for (auto next : neighbours)
 		{
 			double new_cost = cost_so_far[current] + graph.cost(current, next);
+			next->setColour(Colour(0, 255, 0, 255)); 
 			if (!cost_so_far.count(next) || new_cost < cost_so_far[next]) 
 			{
 				cost_so_far[next] = new_cost;

@@ -31,7 +31,14 @@ void Tile::draw(Renderer & r)
 	SDL_LockMutex(m_lock);
 	if (!m_isOccupied)
 	{
-		r.drawRectOutline(Rect(m_x, m_y, m_size, m_size), m_colour);
+		if ((m_colour.r == 255 && m_colour.g == 0) || (m_colour.r == 0 && m_colour.g == 255))
+		{
+			r.drawRect(Rect(m_x, m_y, m_size, m_size), m_colour);
+		}
+		else
+		{
+			r.drawRectOutline(Rect(m_x, m_y, m_size, m_size), m_colour);
+		}
 	}
 	else
 	{
