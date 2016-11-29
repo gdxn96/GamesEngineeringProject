@@ -28,7 +28,9 @@ public:
 
 	Tile* getBottomRight()
 	{
-		return m_grid[m_numRowsColumns - 1][ m_numRowsColumns - 1];
+		auto & t = m_grid[m_numRowsColumns / 2 - 1][m_numRowsColumns - 1];
+
+		return t;
 	}
 	void printPercentage(int percentage);
 

@@ -9,7 +9,7 @@ using namespace std;
 
 inline int heuristic(Tile* a, Tile* b) 
 {
-	return abs(b->getPosition().first - a->getPosition().first) + abs(b->getPosition().first - a->getPosition().second);
+	return (abs(b->getIndex().first - a->getIndex().first) + abs(b->getIndex().second - a->getIndex().second));
 }
 
 template<typename T, typename priority_t>
@@ -93,7 +93,7 @@ void AStar(const Grid& graph,
 			if (!cost_so_far.count(next) || new_cost < cost_so_far[next]) 
 			{
 				cost_so_far[next] = new_cost;
-				double priority = new_cost + heuristic(next, goal) * 10;
+				double priority = new_cost + heuristic(next, goal);
 				open.put(next, priority);
 				came_from[next] = current;
 			}

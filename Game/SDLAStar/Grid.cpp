@@ -121,7 +121,7 @@ void Grid::addWalls()
 
 int Grid::cost(Tile * t1, Tile * t2) const
 {
-	return 5;
+	return 1;
 }
 
 bool Grid::passable(int r, int c) const
