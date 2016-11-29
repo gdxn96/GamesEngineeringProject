@@ -3,8 +3,6 @@
 #include <iostream>
 using namespace std;
 
-
-
 #include "LTimer.h"
 #include "Game.h"
 #include "TaskQueue.h"
@@ -26,7 +24,7 @@ void Game::resetWorld(int numNPCs, int gridSize, float scale)
 
 
 	std::unordered_map<Tile*, Tile*> cameFrom = unordered_map<Tile*, Tile*>();
-	std::unordered_map<Tile*, float> costSoFar = unordered_map<Tile*, float>();
+	std::unordered_map<Tile*, int> costSoFar = unordered_map<Tile*, int>();
 	const Grid gridCopy = m_grid;
 	AStar(gridCopy, m_grid.getTopLeft(), m_grid.getBottomRight(), cameFrom, costSoFar);
 	vector<Tile*> path = reconstruct_path(m_grid.getTopLeft(), m_grid.getBottomRight(), cameFrom);
