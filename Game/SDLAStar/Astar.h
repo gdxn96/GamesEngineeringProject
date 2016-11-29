@@ -66,7 +66,6 @@ void AStar(const Grid& graph,
 		   unordered_map<Tile*, float>& cost_so_far)
 {
 	PriorityQueue<Tile*, float> open;
-	std::unordered_map<Tile*, bool> closed;
 	open.put(start, 0);
 
 	came_from[start] = start;
@@ -75,7 +74,6 @@ void AStar(const Grid& graph,
 	while (!open.empty())
 	{
 		auto current = open.get();
-		closed[current] = true;
 		current->setColour(Colour(0, 255, 0, 255));
 
 		if (current == goal) 
@@ -85,10 +83,6 @@ void AStar(const Grid& graph,
 		vector<Tile*> neighbours = graph.neighbours(current);
 		for (auto next : neighbours)
 		{
-			if (closed[next])
-			{
-				continue;
-			}
 			double new_cost = cost_so_far[current] + graph.cost(current, next);
 			if (!cost_so_far.count(next) || new_cost < cost_so_far[next]) 
 			{
