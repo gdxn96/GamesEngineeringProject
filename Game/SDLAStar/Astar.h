@@ -15,19 +15,29 @@ inline int heuristic(Tile* a, Tile* b)
 template<typename T, typename priority_t>
 struct PriorityQueue {
 	typedef pair<priority_t, T> PQElement;
-	priority_queue<PQElement, vector<PQElement>,
-		std::greater<PQElement>> elements;
+	vector<PQElement> elements;
 
 	inline bool empty() const { return elements.empty(); }
 
 	inline void put(T item, priority_t priority) {
-		elements.emplace(priority, item);
+		auto& element = std::find_if(elements.begin(), elements.end(),
+			[&](std::pair<float, Tile*>& element) { return element.second == item; });
+		if (element != elements.end())
+		{
+			(*element).first = priority;
+		}
+		else
+		{
+			elements.push_back(PQElement(priority, item));
+		}
+
+		std::sort(elements.begin(), elements.end(), [&](std::pair<float, Tile*>& e1, std::pair<float, Tile*>& e2) { return e2.first < e1.first; });
 	}
 
 	inline T get() {
-		T best_item = elements.top().second;
-		elements.pop();
-		return best_item;
+		PQElement bestItem = elements.back();
+		elements.pop_back();
+		return bestItem.second;
 	}
 };
 
@@ -55,15 +65,18 @@ void AStar(const Grid& graph,
 		   unordered_map<Tile*, Tile*>& came_from,
 		   unordered_map<Tile*, float>& cost_so_far)
 {
-	PriorityQueue<Tile*, float> frontier;
-	frontier.put(start, 0);
+	PriorityQueue<Tile*, float> open;
+	std::unordered_map<Tile*, bool> closed;
+	open.put(start, 0);
 
 	came_from[start] = start;
 	cost_so_far[start] = 0;
 
-	while (!frontier.empty()) 
+	while (!open.empty())
 	{
-		auto current = frontier.get();
+		auto current = open.get();
+		closed[current] = true;
+		current->setColour(Colour(0, 255, 0, 255));
 
 		if (current == goal) 
 		{
@@ -72,13 +85,16 @@ void AStar(const Grid& graph,
 		vector<Tile*> neighbours = graph.neighbours(current);
 		for (auto next : neighbours)
 		{
+			if (closed[next])
+			{
+				continue;
+			}
 			double new_cost = cost_so_far[current] + graph.cost(current, next);
-			next->setColour(Colour(0, 255, 0, 255)); 
 			if (!cost_so_far.count(next) || new_cost < cost_so_far[next]) 
 			{
 				cost_so_far[next] = new_cost;
-				double priority = new_cost + heuristic(next, goal);
-				frontier.put(next, priority);
+				double priority = new_cost + heuristic(next, goal) * 10;
+				open.put(next, priority);
 				came_from[next] = current;
 			}
 		}
