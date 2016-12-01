@@ -3,7 +3,7 @@
 
 TaskQueue * TaskQueue::m_instance = nullptr;
 
-TaskQueue::TaskQueue() : m_canConsume(SDL_CreateCond())
+TaskQueue::TaskQueue() : m_canConsume(SDL_CreateCond()), m_queueLock(SDL_CreateMutex())
 {
 }
 
@@ -38,8 +38,10 @@ SDL_cond * TaskQueue::canConsume()
 
 std::function<void()> TaskQueue::consumeJob()
 {
+	SDL_LockMutex(m_queueLock);
 	std::function<void()> job = m_jobs.front();
 	m_jobs.pop();
+	SDL_UnlockMutex(m_queueLock);
 	return job;
 }
 

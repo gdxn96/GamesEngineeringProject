@@ -5,8 +5,9 @@ using namespace std;
 
 #include "LTimer.h"
 #include "Game.h"
-#include "TaskQueue.h"
+
 #include "Astar.h"
+
 
 const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
@@ -22,7 +23,18 @@ void Game::resetWorld(int numNPCs, int gridSize, float scale)
 	renderer.setNewCamera(m_camera);
 	cout << gridSize << "x" << gridSize << " World loaded" << endl << endl;
 
+	TaskQueue::getInstance()->addJob(std::bind(&Game::AStarRun, *this));
+	TaskQueue::getInstance()->addJob(std::bind(&Game::AStarRun, *this));
+	TaskQueue::getInstance()->addJob(std::bind(&Game::AStarRun, *this));
+	TaskQueue::getInstance()->addJob(std::bind(&Game::AStarRun, *this));
+	TaskQueue::getInstance()->addJob(std::bind(&Game::AStarRun, *this));
+	TaskQueue::getInstance()->addJob(std::bind(&Game::AStarRun, *this));
+	TaskQueue::getInstance()->addJob(std::bind(&Game::AStarRun, *this));
+	TaskQueue::getInstance()->addJob(std::bind(&Game::AStarRun, *this));
+}
 
+void Game::AStarRun()
+{
 	std::unordered_map<Tile*, Tile*> cameFrom = unordered_map<Tile*, Tile*>();
 	std::unordered_map<Tile*, int> costSoFar = unordered_map<Tile*, int>();
 	const Grid gridCopy = m_grid;
@@ -35,10 +47,12 @@ void Game::resetWorld(int numNPCs, int gridSize, float scale)
 	}
 }
 
+
 Game::Game(Size2D screenSize, Size2D worldSize) : m_grid(Grid(30, worldSize.w, worldSize.h)), m_prevGrid(0), m_camera(new Camera2D(Rect(0, 0, screenSize.w, screenSize.h), 1)), m_screenSize(screenSize), m_worldSize(worldSize)
 {
+	TaskQueue::getInstance()->spawnWorkers();
 	quit = false;
-	m_grid.addWalls();
+	resetWorld(0, 30, 1);
 	m_camera->setLevelSize(Size2D(worldSize.w, worldSize.h));
 }
 
@@ -51,7 +65,6 @@ Game::~Game()
 bool Game::init() {	
 	Size2D winSize(m_screenSize.w, m_screenSize.h);
 	srand(0);
-	TaskQueue::getInstance()->spawnWorkers();
 
 	//creates our renderer, which looks after drawing and the window
 	renderer.init(winSize,"A* Threading", m_camera);
@@ -178,6 +191,10 @@ void Game::onEvent(EventListener::Event evt) {
 			m_prevGrid = 2;
 			break;
 		case(2):
+			resetWorld(0, 10000, 3000);
+			m_prevGrid = 3;
+			break;
+		case(3):
 			resetWorld(0, 30, 1);
 			m_prevGrid = 0;
 			break;

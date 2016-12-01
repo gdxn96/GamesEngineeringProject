@@ -32,6 +32,7 @@ public:
 
 		return t;
 	}
+
 	void printPercentage(int percentage);
 
 private:

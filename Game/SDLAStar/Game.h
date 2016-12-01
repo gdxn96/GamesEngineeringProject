@@ -9,6 +9,9 @@
 #include "Grid.h"
 #include "Camera2D.h"
 
+#include "TaskQueue.h"
+
+
 /** The game objct whic manages the game loop*/
 class Game:public EventListener
 {
@@ -29,6 +32,8 @@ class Game:public EventListener
 	int m_prevGrid;
 
 	void resetWorld(int numNPCs, int gridSize, float scale);
+
+	void AStarRun();
 
 public:
 	Game(Size2D screenSize, Size2D worldSize);
