@@ -86,15 +86,26 @@ void Grid::addWalls()
 	int column = 0;
 	int row = 0;
 	int edgesMet = 0;
-	int i = 0;
+	
 	cout << "Loading Walls...000%";
+
+	vector<int> columns;
+	for (int i = 0; i < m_numRowsColumns; i++)
+	{
+		if (i % ((m_numRowsColumns / m_numWalls)) == (m_numRowsColumns / m_numWalls) / 2)
+		{
+			columns.push_back(i + rand() % 5 - 2);
+		}
+	}
+
+	int i = 0;
 
 	for (auto& tile : m_tiles)
 	{
 		i++;
 		printPercentage(100 * static_cast<float>(i + 1) /m_tiles.size());
 		column++;
-		if (column % ((m_numRowsColumns / m_numWalls)) == (m_numRowsColumns / m_numWalls) / 2)
+		if (std::find(columns.begin(), columns.end(), column) != columns.end())
 		{
 			if (row != m_numRowsColumns - 1)
 			{
@@ -102,7 +113,7 @@ void Grid::addWalls()
 				{
 					tile->isOccupied(true);
 				}
-				else if (m_wallsTouching != edgesMet && column % 3 == 0)
+				else if (m_wallsTouching != edgesMet && rand() % 3 == 1)
 				{
 					tile->isOccupied(true);
 					edgesMet++;

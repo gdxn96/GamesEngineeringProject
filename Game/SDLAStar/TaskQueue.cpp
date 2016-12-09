@@ -3,7 +3,7 @@
 
 TaskQueue * TaskQueue::m_instance = nullptr;
 
-TaskQueue::TaskQueue() : m_canConsume(SDL_CreateCond()), m_queueLock(SDL_CreateMutex())
+TaskQueue::TaskQueue() : m_canConsume(SDL_CreateSemaphore(0)), m_queueLock(SDL_CreateMutex())
 {
 }
 
@@ -31,7 +31,7 @@ TaskQueue * TaskQueue::getInstance()
 	return m_instance;
 }
 
-SDL_cond * TaskQueue::canConsume()
+SDL_sem * TaskQueue::canConsume()
 {
 	return m_canConsume;
 }
@@ -50,5 +50,5 @@ void TaskQueue::addJob(std::function<void()> f)
 	SDL_LockMutex(m_queueLock);
 	m_jobs.push(f);
 	SDL_UnlockMutex(m_queueLock);
-	SDL_CondSignal(m_canConsume);
+	SDL_SemPost(m_canConsume);
 }
