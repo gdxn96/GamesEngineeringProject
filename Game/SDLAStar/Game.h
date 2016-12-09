@@ -32,9 +32,6 @@ class Game:public EventListener
 	int m_prevGrid;
 
 	void resetWorld(int numNPCs, int gridSize, float scale);
-
-	void AStarRun(int x, int, int, int);
-
 public:
 	Game(Size2D screenSize, Size2D worldSize);
 	~Game();

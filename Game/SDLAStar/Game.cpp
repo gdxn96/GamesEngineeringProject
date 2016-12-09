@@ -11,10 +11,6 @@ using namespace std;
 
 const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
-void func(int x)
-{
-
-}
 void Game::resetWorld(int numNPCs, int gridSize, float scale)
 {
 	cout << "Resetting World..." << endl;
