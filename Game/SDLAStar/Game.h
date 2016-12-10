@@ -25,13 +25,17 @@ class Game:public EventListener
 	bool pause;
 	bool quit;
 
-	Grid m_grid;
+	Grid * m_grid;
+	Grid * m_grid1;
+	Grid * m_grid2;
+	Grid * m_grid3;
 	Camera2D * m_camera;
 	Size2D m_screenSize;
 	Size2D m_worldSize;
 	int m_prevGrid;
+	int m_jobId;
 
-	void resetWorld(int numNPCs, int gridSize, float scale);
+	void resetWorld(int numNPCs, Grid* grid, float scale);
 public:
 	Game(Size2D screenSize, Size2D worldSize);
 	~Game();

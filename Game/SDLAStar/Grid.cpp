@@ -18,6 +18,11 @@ void Grid::printPercentage(int percentage)
 	m_prevPercentage = percentage;
 }
 
+int Grid::getSize()
+{
+	return m_numRowsColumns;
+}
+
 Grid::Grid(int numRC, float width, float height) : m_numRowsColumns(numRC)
 {
 	cout << "Loading Tiles...000%";
@@ -59,6 +64,9 @@ Grid::Grid(int numRC, float width, float height) : m_numRowsColumns(numRC)
 
 Grid::~Grid()
 {
+	for (std::vector<Tile*>::iterator i = m_tiles.begin(); i != m_tiles.end(); i++) {
+		delete *i;
+	}
 	m_tiles.clear();
 }
 

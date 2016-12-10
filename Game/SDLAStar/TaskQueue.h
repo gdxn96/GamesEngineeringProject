@@ -6,26 +6,46 @@
 #include <vector>
 #include <functional>
 #include <iostream>
+#include <unordered_map>
 
 class TaskQueue
 {
+private:
+	void* getResults(int jobId);
+	static TaskQueue * m_instance;
+	SDL_mutex* m_queueLock, *m_resultsLock;
+	SDL_sem* m_canConsume;
+	std::deque<std::pair<int, std::function<void*()>>> m_jobs;
+	std::vector<SDL_Thread*> m_workerPool;
+	int m_numJobs;
+
 public:
 	TaskQueue();
 	SDL_mutex * getLock();
 	void spawnWorkers();
 	static TaskQueue * getInstance();
 	SDL_sem * canConsume();
-	std::function<void()> consumeJob();
+	std::pair<int,std::function<void*()>> consumeJob();
+	std::unordered_map<int, void*> m_jobResults;
+	void storeResults(int jobId, void* results);
+	void deleteResults(int jobId);
+	bool jobFinished(int jobId);
+	void removeJobById(int jobId);
 
-	//TaskQueue::addJob(std::bind(&Some_Class::Some_Method, &Some_object));
-	void addJob(std::function<void()> f);
+	//*TaskQueue::addJob(std::bind(&Some_Class::Some_Method, &Some_object, ...Args)); 
+	//*Function must return a pointer and is assumed to be threadsafe
+	int addJob(std::function<void*()> f);
 
-private:
-	static TaskQueue * m_instance;
-	SDL_mutex* m_queueLock, * m_consumeLock;
-	SDL_sem* m_canConsume;
-	std::queue<std::function<void()>> m_jobs;
-	std::vector<SDL_Thread*> m_workerPool;
+
+	template<typename T>
+	T getJobResults(int jobId)
+	{
+		T * p_results = (T*)TaskQueue::getInstance()->getResults(jobId);
+		T result = *p_results;
+		TaskQueue::getInstance()->deleteResults(jobId);
+		delete p_results;
+		return result;
+	}
 };
 
 static int worker(void* ptr)
@@ -37,11 +57,13 @@ static int worker(void* ptr)
 	while (true)
 	{
 		SDL_SemWait(canConsume);
-		auto& Job = taskQueue->consumeJob();
-
+		auto& jobId_Job = taskQueue->consumeJob();
+		int jobId = jobId_Job.first;
+		auto job = jobId_Job.second;
 		try
 		{
-			Job(); // function<void()> type
+			void* result = (void*)job();
+			taskQueue->storeResults(jobId, result);
 		}
 		catch (...)
 		{

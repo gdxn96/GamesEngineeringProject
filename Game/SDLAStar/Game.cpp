@@ -11,28 +11,36 @@ using namespace std;
 
 const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
-void Game::resetWorld(int numNPCs, int gridSize, float scale)
+void Game::resetWorld(int numNPCs, Grid* grid, float scale)
 {
 	cout << "Resetting World..." << endl;
-	m_grid = Grid(gridSize, m_worldSize.w, m_worldSize.h);
-	m_grid.addWalls();
+	m_grid = grid;
 	delete m_camera;
 	m_camera = new Camera2D(Rect(0, 0, m_screenSize.w, m_screenSize.h), scale);
 	m_camera->setLevelSize(Size2D(m_worldSize.w, m_worldSize.h));
 	renderer.setNewCamera(m_camera);
-	cout << gridSize << "x" << gridSize << " World loaded" << endl << endl;
-
-	/*const Grid gridCopy = m_grid;
+	cout << grid->getSize() << "x" << m_grid->getSize() << " World loaded" << endl << endl;
+/*
 	std::unordered_map<Tile*, Tile*> cameFrom = unordered_map<Tile*, Tile*>();
 	std::unordered_map<Tile*, int> costSoFar = unordered_map<Tile*, int>();
-	TaskQueue::getInstance()->addJob(std::bind(AStar, gridCopy, m_grid.getTopLeft(), m_grid.getBottomRight(), cameFrom, costSoFar));*/
+	m_jobId = TaskQueue::getInstance()->addJob(std::bind(AStar, m_grid, m_grid->getTopLeft(), m_grid->getBottomRight(), cameFrom, costSoFar));*/
 }
 
-Game::Game(Size2D screenSize, Size2D worldSize) : m_grid(Grid(30, worldSize.w, worldSize.h)), m_prevGrid(0), m_camera(new Camera2D(Rect(0, 0, screenSize.w, screenSize.h), 1)), m_screenSize(screenSize), m_worldSize(worldSize)
+Game::Game(Size2D screenSize, Size2D worldSize) : 
+	m_grid(nullptr), 
+	m_grid1(new Grid(30, worldSize.w, worldSize.h)), 
+	m_grid2(new Grid(100, worldSize.w, worldSize.h)), 
+	m_grid3(new Grid(1000, worldSize.w, worldSize.h)), 
+	m_prevGrid(0), 
+	m_camera(new Camera2D(Rect(0, 0, screenSize.w, screenSize.h), 1)), m_screenSize(screenSize), 
+	m_worldSize(worldSize), m_jobId(-1)
 {
+	m_grid1->addWalls();
+	m_grid2->addWalls();
+	m_grid3->addWalls();
 	TaskQueue::getInstance()->spawnWorkers();
 	quit = false;
-	resetWorld(0, 30, 1);
+	resetWorld(0, m_grid1, 1);
 	m_camera->setLevelSize(Size2D(worldSize.w, worldSize.h));
 }
 
@@ -107,7 +115,7 @@ void Game::render()
 	for (std::vector<GameObject*>::iterator i = gameObjects.begin(), e= gameObjects.end(); i != e; i++) {
 		(*i)->Render(renderer);
 	}
-	m_grid.draw(renderer, m_camera);
+	m_grid->draw(renderer, m_camera);
 
 	renderer.present();// display the new frame (swap buffers)
 }
@@ -163,15 +171,15 @@ void Game::onEvent(EventListener::Event evt) {
 		switch (m_prevGrid)
 		{
 		case(0):
-			resetWorld(0, 100, 3);
+			resetWorld(0, m_grid2, 3);
 			m_prevGrid = 1;
 			break;
 		case(1):
-			resetWorld(0, 1000, 30);
+			resetWorld(0, m_grid3, 30);
 			m_prevGrid = 2;
 			break;
 		case(2):
-			resetWorld(0, 30, 1);
+			resetWorld(0, m_grid1, 1);
 			m_prevGrid = 0;
 			break;
 		}

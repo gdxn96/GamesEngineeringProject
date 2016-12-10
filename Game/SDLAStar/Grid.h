@@ -35,6 +35,8 @@ public:
 
 	void printPercentage(int percentage);
 
+	int getSize();
+
 private:
 	vector<vector<Tile *>> m_grid;
 	vector<Tile*> m_tiles;

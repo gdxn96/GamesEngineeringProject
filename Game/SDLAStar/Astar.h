@@ -35,14 +35,14 @@ struct PriorityQueue {
 vector<Tile*> reconstruct_path(
 	Tile* start,
 	Tile* goal,
-	unordered_map<Tile*, Tile*>& came_from
+	unordered_map<Tile*, Tile*>& cameFrom
 ) {
 	vector<Tile*> path;
 	Tile* current = goal;
 	path.push_back(current);
 	while (!(current == start)) 
 	{
-		current = came_from[current];
+		current = cameFrom[current];
 		path.push_back(current);
 	}
 	//path.push_back(start); // optional
@@ -50,7 +50,7 @@ vector<Tile*> reconstruct_path(
 	return path;
 }
 
-void AStar(const Grid& graph,
+vector<Tile*>* AStar(const Grid * graph,
 		   Tile* start,
 		   Tile* goal,
 		   unordered_map<Tile*, Tile*>& cameFrom,
@@ -74,16 +74,17 @@ void AStar(const Grid& graph,
 
 		if (current == goal) 
 		{
+			return new vector<Tile*>(reconstruct_path(start, goal, cameFrom));
 			break;
 		}
-		vector<Tile*> neighbours = graph.neighbours(current);
+		vector<Tile*> neighbours = graph->neighbours(current);
 		for (auto next : neighbours)
 		{
 			if (closed[next])
 			{
 				continue;
 			}
-			int newGCost = gCostUntil[current] + graph.cost(current, next);
+			int newGCost = gCostUntil[current] + graph->cost(current, next);
 
 			//if its never been checked OR we've found a lower cost way of reaching tile
 			if (!gCostUntil.count(next) || newGCost < gCostUntil[next])
@@ -96,4 +97,6 @@ void AStar(const Grid& graph,
 		}
 		closed[current] = true;
 	}
+
+	return nullptr;
 }

@@ -5,6 +5,11 @@ Tile::Tile(std::pair<int, int> index, float x, float y, float size, bool marked)
 {
 }
 
+Tile::~Tile()
+{
+	SDL_DestroyMutex(m_lock);
+}
+
 void Tile::isOccupied(bool marked)
 {
 	SDL_LockMutex(m_lock);

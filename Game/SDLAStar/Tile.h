@@ -6,6 +6,7 @@ class Tile
 {
 public:
 	Tile(std::pair<int, int> index, float x, float y, float size, bool marked);
+	~Tile();
 	void isOccupied(bool marked);
 	bool isOccupied();
 	std::pair<float, float> getPosition();
