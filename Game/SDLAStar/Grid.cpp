@@ -138,6 +138,18 @@ void Grid::addWalls()
 	cout << endl;
 }
 
+void Grid::Reset()
+{
+	for (auto& tile : m_tiles)
+	{
+		tile->BeingTraversed(false);
+	}
+}
+
+void Grid::SpawnEnemies()
+{
+}
+
 int Grid::cost(Tile * t1, Tile * t2) const
 {
 	return 1;

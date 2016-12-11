@@ -31,34 +31,12 @@ void Enemy::Update(float dt)
 	switch (m_state)
 	{
 	case(FSMState::TILE_TRAVERSAL):
-		auto currentTilePos = m_currentTile->getPosition();
-		auto targetTilePos = m_targetTile->getPosition();
-		Point2D distanceVector = m_rect.pos + Point2D(-targetTilePos.first, -targetTilePos.second);
-		float sqDistUntilTargetBefore = (distanceVector.y * distanceVector.y + distanceVector.x * distanceVector.x);
-		m_rect.pos = m_rect.pos + (Point2D(targetTilePos.first - currentTilePos.first, targetTilePos.second - currentTilePos.second) * (dt / TIME_TO_TRAVERSE));
-		distanceVector = m_rect.pos + Point2D(-targetTilePos.first, -targetTilePos.second);
-		float sqDistUntilTargetAfter = (distanceVector.y * distanceVector.y + distanceVector.x * distanceVector.x);
-		if (sqDistUntilTargetAfter > sqDistUntilTargetBefore)
-		{
-			m_targetTile = getNextTile(m_targetTile);
-			if (m_targetTile->BeingTraversed())
-			{
-				m_state = FSMState::WAITING;
-			}
-			else
-			{
-				m_targetTile->BeingTraversed(true);
-			}
-			if (m_targetTile == nullptr)
-			{
-				m_currentTilePath.clear();
-				m_state = FSMState::WAITING_FOR_PATH;
-			}
-		}
+		traverseTile(dt);
 		break;
 	case(FSMState::WAITING):
 		if (!m_targetTile->BeingTraversed())
 		{
+			m_currentTile->BeingTraversed(false);
 			m_targetTile->BeingTraversed(true);
 			m_state = FSMState::TILE_TRAVERSAL;
 		}
@@ -112,6 +90,37 @@ Tile* Enemy::getNextTile(Tile * previousTile)
 		}
 	}
 	return newTargetTile;
+}
+
+void Enemy::traverseTile(float dt)
+{
+	auto currentTilePos = m_currentTile->getPosition();
+	auto targetTilePos = m_targetTile->getPosition();
+	Point2D distanceVector = m_rect.pos + Point2D(-targetTilePos.first, -targetTilePos.second);
+	float sqDistUntilTargetBefore = (distanceVector.y * distanceVector.y + distanceVector.x * distanceVector.x);
+	m_rect.pos = m_rect.pos + (Point2D(targetTilePos.first - currentTilePos.first, targetTilePos.second - currentTilePos.second) * (dt / TIME_TO_TRAVERSE));
+	distanceVector = m_rect.pos + Point2D(-targetTilePos.first, -targetTilePos.second);
+	float sqDistUntilTargetAfter = (distanceVector.y * distanceVector.y + distanceVector.x * distanceVector.x);
+	if (sqDistUntilTargetAfter > sqDistUntilTargetBefore)
+	{
+		m_currentTile = m_targetTile;
+		m_rect.pos = Point2D(currentTilePos.first, currentTilePos.second);
+		m_targetTile = getNextTile(m_targetTile);
+		if (m_targetTile->BeingTraversed())
+		{
+			m_state = FSMState::WAITING;
+		}
+		else
+		{
+			m_currentTile->BeingTraversed(false);
+			m_targetTile->BeingTraversed(true);
+		}
+		if (m_targetTile == nullptr)
+		{
+			m_currentTilePath.clear();
+			m_state = FSMState::WAITING_FOR_PATH;
+		}
+	}
 }
 
 Tile * Enemy::getNextWaypoint(Tile * previousWaypoint)

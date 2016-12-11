@@ -6,7 +6,9 @@
 #include <iostream>
 #include <iomanip>
 #include <queue>
+#include "Enemy.h"
 #include <unordered_map>
+#include "Astar.h"
 
 using namespace std;
 
@@ -17,6 +19,8 @@ public:
 	~Grid();
 	void draw(Renderer & r, Camera2D * cam);
 	void addWalls();
+	void Reset();
+	void SpawnEnemies();
 	vector<Tile*> neighbours(Tile*) const;
 	int cost(Tile* t1, Tile* t2) const;
 

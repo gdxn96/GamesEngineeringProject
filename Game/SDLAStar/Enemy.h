@@ -3,8 +3,11 @@
 #include "BasicTypes.h"
 #include "Tile.h"
 #include <vector>
-#include "Astar.h"
 #include "TaskQueue.h"
+#include "Grid.h"
+//#include "Astar.h"
+
+class Grid;
 
 class Enemy : public GameObject 
 {
@@ -17,6 +20,8 @@ public:
 	void Reset();
 private:
 	Tile* getNextTile(Tile* previousTile);
+
+	void traverseTile(float dt);
 	Tile* getNextWaypoint(Tile* previousTile);
 	Grid* m_gridRef;
 	Rect m_rect;
@@ -31,3 +36,4 @@ private:
 
 	int m_taskId;
 };
+

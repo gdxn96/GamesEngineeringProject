@@ -6,9 +6,6 @@ using namespace std;
 #include "LTimer.h"
 #include "Game.h"
 
-#include "Astar.h"
-
-
 const int SCREEN_FPS = 100;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 void Game::resetWorld(int numNPCs, Grid* grid, float scale)
@@ -20,10 +17,6 @@ void Game::resetWorld(int numNPCs, Grid* grid, float scale)
 	m_camera->setLevelSize(Size2D(m_worldSize.w, m_worldSize.h));
 	renderer.setNewCamera(m_camera);
 	cout << grid->getSize() << "x" << m_grid->getSize() << " World loaded" << endl << endl;
-/*
-	std::unordered_map<Tile*, Tile*> cameFrom = unordered_map<Tile*, Tile*>();
-	std::unordered_map<Tile*, int> costSoFar = unordered_map<Tile*, int>();
-	m_jobId = TaskQueue::getInstance()->addJob(std::bind(AStar, m_grid, m_grid->getTopLeft(), m_grid->getBottomRight(), cameFrom, costSoFar));*/
 }
 
 Game::Game(Size2D screenSize, Size2D worldSize) : 

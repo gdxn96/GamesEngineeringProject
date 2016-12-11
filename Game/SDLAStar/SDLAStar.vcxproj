@@ -168,6 +168,7 @@
     <ClInclude Include="Astar.h" />
     <ClInclude Include="BasicTypes.h" />
     <ClInclude Include="Camera2D.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="EventListener.h" />
@@ -181,7 +182,9 @@
     <ClInclude Include="Tile.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Astar.cpp" />
     <ClCompile Include="Camera2D.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="SDLAStar.cpp" />
     <ClCompile Include="Game.cpp" />
