@@ -26,6 +26,16 @@ bool Tile::isOccupied()
 	return marked;
 }
 
+void Tile::BeingTraversed(bool b)
+{
+	m_beingTraversed = b;
+}
+
+bool Tile::BeingTraversed()
+{
+	return m_beingTraversed;
+}
+
 std::pair<float, float> Tile::getPosition()
 {
 	return std::pair<float, float>(m_x, m_y);
@@ -57,6 +67,11 @@ void Tile::setColour(Colour c)
 	SDL_LockMutex(m_lock);
 	m_colour = c; //critical section
 	SDL_UnlockMutex(m_lock);
+}
+
+Rect Tile::getRect()
+{
+	return Rect(m_x, m_y, m_size, m_size);
 }
 
 std::pair<int, int> Tile::getIndex()

@@ -13,6 +13,11 @@ public:
 		return Point2D(this->x * scale, this->y * scale);
 	}
 
+	Point2D& operator+(Point2D rhs)
+	{
+		return Point2D(this->x + rhs.x, this->y + rhs.x);
+	}
+
 	Point2D& operator/(float scale)
 	{
 		return Point2D(this->x / scale, this->y / scale);

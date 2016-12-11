@@ -51,11 +51,11 @@ vector<Tile*> reconstruct_path(
 }
 
 vector<Tile*>* AStar(const Grid * graph,
-		   Tile* start,
-		   Tile* goal,
-		   unordered_map<Tile*, Tile*>& cameFrom,
-		   unordered_map<Tile*, int>& gCostUntil)
+					 Tile* start,
+					 Tile* goal)
 {
+	unordered_map<Tile*, Tile*> cameFrom = unordered_map<Tile*, Tile*>();
+	unordered_map<Tile*, int> gCostUntil = unordered_map<Tile*, int>();
 	PriorityQueue<Tile*, float> open;
 	unordered_map<Tile*, bool> closed;
 	open.put(start, 0);
