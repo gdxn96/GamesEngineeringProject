@@ -38,7 +38,7 @@ vector<Tile*>* AStar(const Grid * graph, Tile * start, Tile * goal)
 
 		if (current == goal)
 		{
-			path = new vector<Tile*>(reconstruct_path(start, goal, cameFrom));
+			path =  new vector<Tile*>(reconstruct_path(start, goal, cameFrom));
 			break;
 		}
 		vector<Tile*> neighbours = graph->neighbours(current);
@@ -63,9 +63,5 @@ vector<Tile*>* AStar(const Grid * graph, Tile * start, Tile * goal)
 	}
 
 	//unsolvable path if nullptr, should never happen on this map
-	if (path == nullptr)
-	{
-		path = new vector<Tile*>();
-	}
 	return path;
 }

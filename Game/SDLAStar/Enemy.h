@@ -37,7 +37,6 @@ private:
 	Player* m_player;
 	Tile * m_prevPlayerTile;
 
-	Colour m_colour;
 	int m_taskId;
 };
 

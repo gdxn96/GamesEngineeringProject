@@ -237,7 +237,6 @@ void Grid::setEnemySpawn()
 		for (int j = m_enemySpawnMinX; j < m_enemySpawnMaxX; j++)
 		{
 			m_enemySpawn.push_back(m_grid[i][j]);
-			m_grid[i][j]->setColour(Colour(0, 255, 0));
 		}
 	}
 }

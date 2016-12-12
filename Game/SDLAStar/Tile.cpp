@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Tile.h"
 
-Tile::Tile(std::pair<int, int> index, float x, float y, float size, bool marked) : m_x(x), m_y(y), m_isOccupied(marked), m_size(size), m_index(index), m_colour(255, 255, 255, 255), m_lock(SDL_CreateMutex())
+Tile::Tile(std::pair<int, int> index, float x, float y, float size, bool marked) : m_isOccupied(marked), m_size(size), m_index(index), m_lock(SDL_CreateMutex())
 {
 }
 
@@ -12,18 +12,12 @@ Tile::~Tile()
 
 void Tile::isOccupied(bool marked)
 {
-	SDL_LockMutex(m_lock);
-	m_isOccupied = marked; //critical section
-	SDL_UnlockMutex(m_lock);
+	m_isOccupied = marked;
 }
 
 bool Tile::isOccupied()
 {
-	bool marked;
-	SDL_LockMutex(m_lock);
-	marked = m_isOccupied; //critical section
-	SDL_UnlockMutex(m_lock);
-	return marked;
+	return m_isOccupied;
 }
 
 void Tile::BeingTraversed(bool b)
@@ -38,40 +32,38 @@ bool Tile::BeingTraversed()
 
 std::pair<float, float> Tile::getPosition()
 {
-	return std::pair<float, float>(m_x, m_y);
+	return std::pair<float, float>( m_index.second * m_size, m_index.first * m_size);
 }
 
 void Tile::draw(Renderer & r)
 {
-	SDL_LockMutex(m_lock);
 	if (!m_isOccupied)
 	{
-		if ((m_colour.r == 255 && m_colour.g == 0) || (m_colour.r == 0 && m_colour.g == 255))
+		if (m_index.first % 2 == 0)
 		{
-			r.drawRect(Rect(m_x, m_y, m_size, m_size), m_colour);
+			if (m_index.second % 2 == 1)
+				r.drawRect(getRect(), Colour(102, 153, 153));
+			else
+				r.drawRect(getRect(), Colour(102, 153, 255));
 		}
 		else
 		{
-			r.drawRectOutline(Rect(m_x, m_y, m_size, m_size), m_colour);
+			if (m_index.second % 2 == 1)
+				r.drawRect(getRect(), Colour(102, 153, 255));
+			else
+				r.drawRect(getRect(), Colour(102, 153, 153));
 		}
 	}
 	else
 	{
-		r.drawRect(Rect(m_x, m_y, m_size, m_size), m_colour);
+		r.drawRect(getRect(), Colour());
 	}
-	SDL_UnlockMutex(m_lock);
 }
 
-void Tile::setColour(Colour c)
-{
-	SDL_LockMutex(m_lock);
-	m_colour = c; //critical section
-	SDL_UnlockMutex(m_lock);
-}
 
 Rect Tile::getRect()
 {
-	return Rect(m_x, m_y, m_size, m_size);
+	return Rect(getPosition().first, getPosition().second, m_size, m_size);
 }
 
 std::pair<int, int> Tile::getIndex()

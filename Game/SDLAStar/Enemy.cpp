@@ -12,7 +12,6 @@ Enemy::Enemy(Grid * gridRef, Player* player, std::vector<Tile*> waypointsToVisit
 	m_state(FSMState::WAITING_FOR_PATH),
 	m_taskId(-1),
 	m_targetWaypoint(nullptr),
-	m_colour(rand() % 255, rand() % 255, rand() % 255),
 	m_player(player),
 	m_timeWaiting(0),
 	m_prevPlayerTile(nullptr)
@@ -28,7 +27,7 @@ void Enemy::Render(Renderer & r)
 		return;
 		break;
 	default:
-		r.drawRect(m_rect, m_colour);
+		r.drawRect(m_rect, Colour(255, 0, 0));
 		break;
 	}
 }
