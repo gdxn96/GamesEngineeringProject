@@ -7,12 +7,13 @@
 #include "Grid.h"
 
 class Grid;
+class Player;
 
 class Enemy : public GameObject 
 {
 public:
 	enum FSMState {TILE_TRAVERSAL, CHASING_PLAYER, WAITING, WAITING_FOR_PATH, DEAD};
-	Enemy(Grid* gridRef, std::vector<Tile*> waypointsToVisit, Tile* startTile);
+	Enemy(Grid* gridRef, Player* player, std::vector<Tile*> waypointsToVisit, Tile* startTile);
 	void Render(Renderer& r) override;
 	void Update(float dt) override;
 	Rect getRect();
@@ -28,10 +29,13 @@ private:
 	Tile * m_currentTile;
 	Tile * m_startTile;
 	Tile * m_targetWaypoint;
+	float m_timeWaiting;
 	const float TIME_TO_TRAVERSE;
 	FSMState m_state;
 	std::vector<Tile*> m_wayPointsToVisit;
 	std::vector<Tile*> m_currentTilePath;
+	Player* m_player;
+	Tile * m_prevPlayerTile;
 
 	Colour m_colour;
 	int m_taskId;

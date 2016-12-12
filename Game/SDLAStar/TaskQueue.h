@@ -50,6 +50,9 @@ public:
 
 static int worker(void* ptr)
 {
+	int* p_id = (int*)(ptr);
+	int id = *p_id;
+	delete p_id;
 	srand(0);
 	TaskQueue * taskQueue = TaskQueue::getInstance();
 	SDL_mutex * lock = taskQueue->getLock();
@@ -67,7 +70,7 @@ static int worker(void* ptr)
 		}
 		catch (...)
 		{
-			std::cout << "EARLY RETURN" << std::endl;
+			std::cout << "EARLY RETURN job: " << jobId << " worker: " << id << std::endl;
 		}
 	}
 }

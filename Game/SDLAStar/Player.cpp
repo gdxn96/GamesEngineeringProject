@@ -1,7 +1,13 @@
 #include "stdafx.h"
 #include "Player.h"
 
-Player::Player(std::vector<Tile*> path) : m_path(path), m_rect(path.front()->getRect()), m_targetTile(path.front()), m_currentTile(path.front()), TIME_TO_TRAVERSE(0.1f), m_colour(Colour(0, 255, 0))
+Player::Player(std::vector<Tile*> path) : 
+	m_path(path), 
+	m_rect(path.front()->getRect()), 
+	m_targetTile(path.front()), 
+	m_currentTile(path.front()), 
+	TIME_TO_TRAVERSE(2), 
+	m_colour(Colour(0, 255, 0))
 {
 }
 
@@ -36,6 +42,11 @@ Rect Player::getRect()
 void Player::Render(Renderer & r)
 {
 	r.drawRect(m_rect, m_colour);
+}
+
+Tile * Player::getCurrentTile()
+{
+	return m_currentTile;
 }
 
 Tile * Player::getNextTile(Tile * previousTile)

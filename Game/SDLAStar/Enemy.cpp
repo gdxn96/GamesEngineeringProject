@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Enemy.h"
 
-Enemy::Enemy(Grid * gridRef, std::vector<Tile*> waypointsToVisit, Tile * startTile) : 
-	TIME_TO_TRAVERSE(0.01f), 
+Enemy::Enemy(Grid * gridRef, Player* player, std::vector<Tile*> waypointsToVisit, Tile * startTile) : 
+	TIME_TO_TRAVERSE(0.1f), 
 	m_gridRef(gridRef),
 	m_wayPointsToVisit(waypointsToVisit), 
 	m_targetTile(nullptr), 
@@ -12,7 +12,10 @@ Enemy::Enemy(Grid * gridRef, std::vector<Tile*> waypointsToVisit, Tile * startTi
 	m_state(FSMState::WAITING_FOR_PATH),
 	m_taskId(-1),
 	m_targetWaypoint(nullptr),
-	m_colour(rand() % 255, rand() % 255, rand() % 255)
+	m_colour(rand() % 255, rand() % 255, rand() % 255),
+	m_player(player),
+	m_timeWaiting(0),
+	m_prevPlayerTile(nullptr)
 {
 	m_targetWaypoint = getNextWaypoint(m_targetWaypoint);
 }
@@ -22,6 +25,7 @@ void Enemy::Render(Renderer & r)
 	switch (m_state)
 	{
 	case(DEAD):
+		return;
 		break;
 	default:
 		r.drawRect(m_rect, m_colour);
@@ -31,22 +35,31 @@ void Enemy::Render(Renderer & r)
 
 void Enemy::Update(float dt)
 {
+	if (m_currentTile == m_player->getCurrentTile())
+	{
+		m_state = DEAD;
+	}
+
 	switch (m_state)
 	{
 	case(TILE_TRAVERSAL):
+		if (m_prevPlayerTile != nullptr && m_prevPlayerTile != m_player->getCurrentTile())
+		{
+			m_state = CHASING_PLAYER;
+		}
 		traverseTile(dt);
 		break;
 	case(WAITING):
-		if (!m_targetTile->BeingTraversed())
+		m_timeWaiting += dt;
+		if (m_targetTile != nullptr && !m_targetTile->BeingTraversed() || m_timeWaiting > TIME_TO_TRAVERSE)
 		{
-			m_currentTile->BeingTraversed(false);
-			m_targetTile->BeingTraversed(true);
+			m_targetTile->BeingTraversed(false);
 			m_state = FSMState::TILE_TRAVERSAL;
 		}
 		break;
 	case(CHASING_PLAYER):
-		//m_targetWaypoint = playerTile
-		m_currentTile->BeingTraversed(false);
+		m_targetWaypoint = m_player->getCurrentTile();
+		m_state = WAITING_FOR_PATH;
 		break;
 	case(WAITING_FOR_PATH):
 		if (m_taskId == -1)
@@ -62,9 +75,15 @@ void Enemy::Update(float dt)
 		{
 			m_currentTilePath = TaskQueue::getInstance()->getJobResults<vector<Tile*>>(m_taskId);
 			m_taskId = -1;
-			m_targetTile = getNextTile(m_targetTile);
-			m_state = FSMState::TILE_TRAVERSAL;
+			if (m_currentTilePath.size() != 0)
+			{
+				m_targetTile = nullptr;
+				m_targetTile = getNextTile(m_targetTile);
+				m_state = FSMState::TILE_TRAVERSAL;
+			}
 		}
+	case(DEAD):
+		m_currentTile->BeingTraversed(false);
 		break;
 	}
 }
@@ -132,6 +151,7 @@ void Enemy::traverseTile(float dt)
 		}
 		else if (m_targetTile->BeingTraversed())
 		{
+			m_timeWaiting = 0;
 			m_state = FSMState::WAITING;
 		}
 		else

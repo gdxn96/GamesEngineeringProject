@@ -14,11 +14,11 @@ SDL_mutex * TaskQueue::getLock()
 
 void TaskQueue::spawnWorkers()
 {
-	int numWorkers = std::thread::hardware_concurrency() - 1;
+	int numWorkers = std::thread::hardware_concurrency() -1;
 
 	for (int i = 0; i < numWorkers; i++)
 	{
-		m_workerPool.push_back(SDL_CreateThread(worker, "GenericWorker", (void*)NULL));
+		m_workerPool.push_back(SDL_CreateThread(worker, "GenericWorker", (void*)new int(i + 1)));
 	}
 }
 

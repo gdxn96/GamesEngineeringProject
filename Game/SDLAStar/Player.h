@@ -12,6 +12,7 @@ public:
 	void Update(float dt) override;
 	Rect getRect();
 	void Render(Renderer& r) override;
+	Tile * getCurrentTile();
 private:
 	std::vector<Tile*> m_path;
 	Rect m_rect;

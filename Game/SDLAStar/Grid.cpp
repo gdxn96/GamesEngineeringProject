@@ -128,12 +128,15 @@ void Grid::addWalls()
 	while (m_numWalls != wallColumns.size())
 	{
 		int c = rand() % (m_numRowsColumns - 2) + 1; //column wall position
-		auto it = std::find_if(wallColumns.begin(), wallColumns.end(), [&](int el) { return (el < c + 2 && el > c - 2) && 
-																					!(el < m_playerSpawnMaxX && el > m_playerSpawnMinX) && 
-																					!(el < m_enemySpawnMaxX && el > m_enemySpawnMinX); }); //ensure two walls aren't stuck together, and they don't intersect spawns
-		if (it == wallColumns.end()) //if another wall is not too close
+		auto it = std::find_if(wallColumns.begin(), wallColumns.end(), [&](int el) { return (el < c + 2 && el > c - 2); }); //ensure two walls aren't stuck together, and they don't intersect spawns
+		
+		if (!(c <= m_playerSpawnMaxX && c >= m_playerSpawnMinX) &&
+			!(c <= m_enemySpawnMaxX && c >= m_enemySpawnMinX)) //if it doesn't intersect with spawns
 		{
-			wallColumns.push_back(c);
+			if (it == wallColumns.end()) //if another wall is not too close
+			{
+				wallColumns.push_back(c);
+			}
 		}
 	}
 
@@ -174,7 +177,7 @@ void Grid::SpawnEnemies()
 		if (std::find(taken.begin(), taken.end(), spawnTile) == taken.end())
 		{
 			taken.push_back(spawnTile);
-			m_enemies.push_back(new Enemy(this, m_waypoints, spawnTile));
+			m_enemies.push_back(new Enemy(this, m_player, m_waypoints, spawnTile));
 		}
 	}
 }
@@ -189,11 +192,11 @@ void Grid::calculateWaypoints()
 	for (auto& tile : path)
 	{
 		tiles++;
-		if (tiles % 10 == 1)
+		if (tiles % 20 == 1)
 		{
 			m_waypoints.push_back(tile); // every 10 tiles is a waypoint
 		}
-		if (tiles > path.size() - (path.size() / 50)) //ignore last 2 percent of tiles
+		if (tiles > path.size() - (path.size() / 10)) //ignore last 10 percent of tiles
 		{
 			break;
 		}
@@ -208,19 +211,19 @@ void Grid::setPlayerSpawn()
 
 	for (int i = 0; i < spawnSize; i++)
 	{
-		m_playerPath.push_back(m_grid[i][0]);
+		m_playerPath.push_back(m_grid[0][i]);
 	}
-	for (int i = 0; i < spawnSize; i++)
-	{
-		m_playerPath.push_back(m_grid[spawnSize - 1][i]);
-	}
-	for (int i = spawnSize - 1; i > 0; i--)
+	for (int i = 1; i < spawnSize; i++)
 	{
 		m_playerPath.push_back(m_grid[i][spawnSize - 1]);
 	}
-	for (int i = spawnSize - 1; i > 0; i--)
+	for (int i = spawnSize - 2; i > 0; i--)
 	{
-		m_playerPath.push_back(m_grid[0][i]);
+		m_playerPath.push_back(m_grid[spawnSize - 1][i]);
+	}
+	for (int i = spawnSize - 2; i > 0; i--)
+	{
+		m_playerPath.push_back(m_grid[i][0]);
 	}
 }
 
@@ -234,6 +237,7 @@ void Grid::setEnemySpawn()
 		for (int j = m_enemySpawnMinX; j < m_enemySpawnMaxX; j++)
 		{
 			m_enemySpawn.push_back(m_grid[i][j]);
+			m_grid[i][j]->setColour(Colour(0, 255, 0));
 		}
 	}
 }
