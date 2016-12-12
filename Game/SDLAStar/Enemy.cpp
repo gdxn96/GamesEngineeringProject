@@ -2,7 +2,7 @@
 #include "Enemy.h"
 
 Enemy::Enemy(Grid * gridRef, Player* player, std::vector<Tile*> waypointsToVisit, Tile * startTile) : 
-	TIME_TO_TRAVERSE(0.1f), 
+	TIME_TO_TRAVERSE(0.001f), 
 	m_gridRef(gridRef),
 	m_wayPointsToVisit(waypointsToVisit), 
 	m_targetTile(nullptr), 
@@ -59,6 +59,7 @@ void Enemy::Update(float dt)
 		break;
 	case(CHASING_PLAYER):
 		m_targetWaypoint = m_player->getCurrentTile();
+		m_prevPlayerTile = m_targetWaypoint;
 		m_state = WAITING_FOR_PATH;
 		break;
 	case(WAITING_FOR_PATH):
