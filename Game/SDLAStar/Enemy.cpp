@@ -21,7 +21,7 @@ void Enemy::Render(Renderer & r)
 {
 	switch (m_state)
 	{
-	case(FSMState::DEAD):
+	case(DEAD):
 		break;
 	default:
 		r.drawRect(m_rect, m_colour);
@@ -33,10 +33,10 @@ void Enemy::Update(float dt)
 {
 	switch (m_state)
 	{
-	case(FSMState::TILE_TRAVERSAL):
+	case(TILE_TRAVERSAL):
 		traverseTile(dt);
 		break;
-	case(FSMState::WAITING):
+	case(WAITING):
 		if (!m_targetTile->BeingTraversed())
 		{
 			m_currentTile->BeingTraversed(false);
@@ -44,16 +44,16 @@ void Enemy::Update(float dt)
 			m_state = FSMState::TILE_TRAVERSAL;
 		}
 		break;
-	case(FSMState::CHASING_PLAYER):
+	case(CHASING_PLAYER):
 		//m_targetWaypoint = playerTile
 		m_currentTile->BeingTraversed(false);
 		break;
-	case(FSMState::WAITING_FOR_PATH):
+	case(WAITING_FOR_PATH):
 		if (m_taskId == -1)
 		{ 
 			if (m_targetWaypoint == nullptr)
 			{
-				m_state = FSMState::CHASING_PLAYER;
+				m_state = CHASING_PLAYER;
 				break;
 			}
 			m_taskId = TaskQueue::getInstance()->addJob(std::bind(AStar, m_gridRef, m_currentTile, m_targetWaypoint));

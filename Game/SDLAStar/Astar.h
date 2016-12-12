@@ -24,7 +24,7 @@ struct PriorityQueue {
 	inline void put(T item, priorityT priority)
 	{
 		elements.push_back(PQElement(priority, item));
-		std::sort(elements.begin(), elements.end(), [&](PQElement e1, PQElement e2) { return e2.first < e1.first; });
+		std::sort(elements.begin(), elements.end(), [](PQElement e1, PQElement e2) { return e2.first < e1.first; });
 	}
 
 	inline T get() {

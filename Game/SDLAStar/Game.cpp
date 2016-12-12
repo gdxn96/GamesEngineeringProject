@@ -21,9 +21,9 @@ void Game::resetWorld(int numNPCs, Grid* grid, float scale)
 
 Game::Game(Size2D screenSize, Size2D worldSize) : 
 	m_grid(nullptr), 
-	m_grid1(new Grid(30, worldSize.w, worldSize.h)), 
-	m_grid2(new Grid(100, worldSize.w, worldSize.h)), 
-	m_grid3(new Grid(1000, worldSize.w, worldSize.h)), 
+	m_grid1(new Grid(30, 5, worldSize.w, worldSize.h)),
+	m_grid2(new Grid(100, 50, worldSize.w, worldSize.h)),
+	m_grid3(new Grid(1000, 500, worldSize.w, worldSize.h)),
 	m_prevGrid(0), 
 	m_camera(new Camera2D(Rect(0, 0, screenSize.w, screenSize.h), 1)), m_screenSize(screenSize), 
 	m_worldSize(worldSize), m_jobId(-1)

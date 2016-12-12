@@ -22,6 +22,7 @@ vector<Tile*>* AStar(const Grid * graph, Tile * start, Tile * goal)
 	unordered_map<Tile*, int> gCostUntil = unordered_map<Tile*, int>();
 	PriorityQueue<Tile*, float> open;
 	unordered_map<Tile*, bool> closed;
+	vector<Tile*>* path = nullptr;
 	open.put(start, 0);
 
 	cameFrom[start] = start;
@@ -37,7 +38,7 @@ vector<Tile*>* AStar(const Grid * graph, Tile * start, Tile * goal)
 
 		if (current == goal)
 		{
-			return new vector<Tile*>(reconstruct_path(start, goal, cameFrom));
+			path =  new vector<Tile*>(reconstruct_path(start, goal, cameFrom));
 			break;
 		}
 		vector<Tile*> neighbours = graph->neighbours(current);
@@ -61,6 +62,6 @@ vector<Tile*>* AStar(const Grid * graph, Tile * start, Tile * goal)
 		closed[current] = true;
 	}
 
-	//unsolvable path, should never happen on this map
-	return nullptr;
+	//unsolvable path if nullptr, should never happen on this map
+	return path;
 }

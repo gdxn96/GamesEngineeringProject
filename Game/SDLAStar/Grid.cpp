@@ -23,7 +23,7 @@ int Grid::getSize()
 	return m_numRowsColumns;
 }
 
-Grid::Grid(int numRC, float width, float height) : m_numRowsColumns(numRC)
+Grid::Grid(int numRC, int numEnemies, float width, float height) : m_numEnemies(numEnemies), m_numRowsColumns(numRC), m_playerPath(vector<Tile*>())
 {
 	cout << "Loading Tiles...000%";
 	m_tileSize = width / numRC;
@@ -61,6 +61,9 @@ Grid::Grid(int numRC, float width, float height) : m_numRowsColumns(numRC)
 	}
 	cout << endl;
 
+	setPlayerSpawn();
+	m_player = new Player(m_playerPath);
+	setEnemySpawn();
 	addWalls();
 	calculateWaypoints();
 	SpawnEnemies();
@@ -97,6 +100,11 @@ void Grid::draw(Renderer & r, Camera2D* cam)
 			enemy->Render(r);
 		}
 	}
+
+	if (camPos.containsPoint(m_player->getRect().pos))
+	{
+		m_player->Render(r);
+	}
 }
 
 void Grid::update(float dt)
@@ -105,6 +113,8 @@ void Grid::update(float dt)
 	{
 		enemy->Update(dt);
 	}
+
+	m_player->Update(dt);
 }
 
 void Grid::addWalls()
@@ -118,7 +128,9 @@ void Grid::addWalls()
 	while (m_numWalls != wallColumns.size())
 	{
 		int c = rand() % (m_numRowsColumns - 2) + 1; //column wall position
-		auto it = std::find_if(wallColumns.begin(), wallColumns.end(), [&](int el) { return el < c + 2 && el > c - 2; }); //ensure two walls aren't stuck together
+		auto it = std::find_if(wallColumns.begin(), wallColumns.end(), [&](int el) { return (el < c + 2 && el > c - 2) && 
+																					!(el < m_playerSpawnMaxX && el > m_playerSpawnMinX) && 
+																					!(el < m_enemySpawnMaxX && el > m_enemySpawnMinX); }); //ensure two walls aren't stuck together, and they don't intersect spawns
 		if (it == wallColumns.end()) //if another wall is not too close
 		{
 			wallColumns.push_back(c);
@@ -135,14 +147,7 @@ void Grid::addWalls()
 		}
 		if (edgesMet != m_wallsTouching)
 		{
-			if (j % 2 == 0)
-			{
-				m_grid[0][col]->isOccupied(true);
-			}
-			else
-			{
-				m_grid[m_numRowsColumns - 1][col]->isOccupied(true);
-			}
+			m_grid[0][col]->isOccupied(true);
 			edgesMet++;
 		}
 		j++;
@@ -162,17 +167,22 @@ void Grid::Reset()
 void Grid::SpawnEnemies()
 {
 	Tile * spawnTile = nullptr;
-	for (int i = 0; i < 100; i++)
+	vector<Tile *> taken;
+	for (int i = 0; i < m_numEnemies; i++)
 	{
-		spawnTile = m_grid[0][0];
-		m_enemies.push_back(new Enemy(this, m_waypoints, spawnTile));
+		spawnTile = m_enemySpawn[rand() % m_enemySpawn.size()];
+		if (std::find(taken.begin(), taken.end(), spawnTile) == taken.end())
+		{
+			taken.push_back(spawnTile);
+			m_enemies.push_back(new Enemy(this, m_waypoints, spawnTile));
+		}
 	}
 }
 
 void Grid::calculateWaypoints()
 {
 	cout << "Calculating Waypoints" << endl;
-	auto p_path = AStar(this, m_grid[0][0], m_grid[m_numRowsColumns - 1][m_numRowsColumns - 1]);
+	auto p_path = AStar(this, m_enemySpawn.front(), m_playerPath.front());
 	auto path = *p_path;
 	delete p_path;
 	int tiles = 0;
@@ -186,6 +196,44 @@ void Grid::calculateWaypoints()
 		if (tiles > path.size() - (path.size() / 50)) //ignore last 2 percent of tiles
 		{
 			break;
+		}
+	}
+}
+
+void Grid::setPlayerSpawn()
+{
+	int spawnSize = sqrt(m_numRowsColumns) + 1;
+	m_playerSpawnMinX = 0;
+	m_playerSpawnMaxX = spawnSize;
+
+	for (int i = 0; i < spawnSize; i++)
+	{
+		m_playerPath.push_back(m_grid[i][0]);
+	}
+	for (int i = 0; i < spawnSize; i++)
+	{
+		m_playerPath.push_back(m_grid[spawnSize - 1][i]);
+	}
+	for (int i = spawnSize - 1; i > 0; i--)
+	{
+		m_playerPath.push_back(m_grid[i][spawnSize - 1]);
+	}
+	for (int i = spawnSize - 1; i > 0; i--)
+	{
+		m_playerPath.push_back(m_grid[0][i]);
+	}
+}
+
+void Grid::setEnemySpawn()
+{
+	int spawnSize = sqrt(m_numRowsColumns) + 1;
+	m_enemySpawnMinX = m_numRowsColumns - spawnSize;
+	m_enemySpawnMaxX = m_numRowsColumns;
+	for (int i = m_enemySpawnMinX; i < m_enemySpawnMaxX; i++)
+	{
+		for (int j = m_enemySpawnMinX; j < m_enemySpawnMaxX; j++)
+		{
+			m_enemySpawn.push_back(m_grid[i][j]);
 		}
 	}
 }

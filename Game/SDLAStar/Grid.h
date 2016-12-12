@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include <unordered_map>
 #include "Astar.h"
+#include "Player.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ class Enemy;
 class Grid
 {
 public:
-	Grid(int numRC, float width, float height);
+	Grid(int numRC, int numEnemies, float width, float height);
 
 	~Grid();
 
@@ -51,6 +52,15 @@ private:
 	vector<std::pair<int, int>> dirs = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
 	vector<Tile*> m_waypoints;
 	vector<Enemy*> m_enemies;
+	Player * m_player;
+	vector<Tile*> m_playerPath, m_enemySpawn;
+	int m_numEnemies;
 	int m_prevPercentage;
+
+	int m_playerSpawnMinX, m_playerSpawnMaxX;
+	int m_enemySpawnMinX, m_enemySpawnMaxX;
+
+	void setPlayerSpawn();
+	void setEnemySpawn();
 	
 };
