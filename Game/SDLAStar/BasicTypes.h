@@ -67,8 +67,8 @@ public:
 	{
 		float x = pt.x;
 		float y = pt.y;
-		if (x < (this->pos.x + (.5*this->size.w)) && x >(this->pos.x - (.5*this->size.w)) &&
-			y < (this->pos.y + (.5*this->size.h)) && y >(this->pos.y - (.5*this->size.h)))
+		if (x >= this->pos.x && x <= this->pos.x + this->size.w &&
+			y >= this->pos.y && y <= this->pos.y + this->size.h)
 			return true;
 		else
 			return false;

@@ -92,7 +92,10 @@ void Grid::draw(Renderer & r, Camera2D* cam)
 	}
 	for (auto& enemy : m_enemies)
 	{
-		enemy->Render(r);
+		if (camPos.containsPoint(enemy->getRect().pos))
+		{
+			enemy->Render(r);
+		}
 	}
 }
 
