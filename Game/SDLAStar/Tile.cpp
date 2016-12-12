@@ -1,13 +1,16 @@
 #include "stdafx.h"
 #include "Tile.h"
 
-Tile::Tile(std::pair<int, int> index, float x, float y, float size, bool marked) : m_isOccupied(marked), m_size(size), m_index(index), m_lock(SDL_CreateMutex())
+Tile::Tile(std::pair<int, int> index, float size, bool marked) : 
+	m_isOccupied(marked), 
+	m_size(size),
+	m_index(index),
+	m_beingTraversed(false)
 {
 }
 
 Tile::~Tile()
 {
-	SDL_DestroyMutex(m_lock);
 }
 
 void Tile::isOccupied(bool marked)

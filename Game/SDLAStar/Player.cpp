@@ -6,7 +6,7 @@ Player::Player(std::vector<Tile*> path) :
 	m_rect(path.front()->getRect()), 
 	m_targetTile(path.front()), 
 	m_currentTile(path.front()), 
-	TIME_TO_TRAVERSE(2), 
+	TIME_TO_TRAVERSE(0.1f), 
 	m_colour(Colour(0, 255, 0))
 {
 }

@@ -33,7 +33,7 @@ Grid::Grid(int numRC, int numEnemies, float width, float height) : m_numEnemies(
 		for (int j = 0; j < numRC; j++)
 		{
 			printPercentage(int(100 * (m_tiles.size() + 1) / static_cast<float>(numRC * numRC)));
-			Tile * temp = new Tile(std::pair<int, int>(i, j),j * m_tileSize, i * m_tileSize, m_tileSize, false);
+			Tile * temp = new Tile(std::pair<int, int>(i, j),  m_tileSize, false);
 			m_grid[i].push_back(temp);
 			m_tiles.push_back(temp);
 		} 

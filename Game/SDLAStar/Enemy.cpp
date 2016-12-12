@@ -52,7 +52,8 @@ void Enemy::Update(float dt)
 		m_timeWaiting += dt;
 		if (m_targetTile != nullptr && !m_targetTile->BeingTraversed() || m_timeWaiting > TIME_TO_TRAVERSE)
 		{
-			m_targetTile->BeingTraversed(false);
+			m_targetTile->BeingTraversed(true);
+			m_currentTile->BeingTraversed(false);
 			m_state = FSMState::TILE_TRAVERSAL;
 		}
 		break;
