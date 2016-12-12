@@ -5,7 +5,6 @@
 #include <vector>
 #include "TaskQueue.h"
 #include "Grid.h"
-//#include "Astar.h"
 
 class Grid;
 
@@ -16,7 +15,7 @@ public:
 	Enemy(Grid* gridRef, std::vector<Tile*> waypointsToVisit, Tile* startTile);
 	void Render(Renderer& r) override;
 	void Update(float dt) override;
-
+	Rect getRect();
 	void Reset();
 private:
 	Tile* getNextTile(Tile* previousTile);
@@ -28,12 +27,13 @@ private:
 	Tile * m_targetTile;
 	Tile * m_currentTile;
 	Tile * m_startTile;
-	Tile * m_previousWaypoint;
+	Tile * m_targetWaypoint;
 	const float TIME_TO_TRAVERSE;
 	FSMState m_state;
 	std::vector<Tile*> m_wayPointsToVisit;
 	std::vector<Tile*> m_currentTilePath;
 
+	Colour m_colour;
 	int m_taskId;
 };
 

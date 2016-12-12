@@ -2,7 +2,7 @@
 #include "Enemy.h"
 
 Enemy::Enemy(Grid * gridRef, std::vector<Tile*> waypointsToVisit, Tile * startTile) : 
-	TIME_TO_TRAVERSE(1.f), 
+	TIME_TO_TRAVERSE(0.1f), 
 	m_gridRef(gridRef),
 	m_wayPointsToVisit(waypointsToVisit), 
 	m_targetTile(nullptr), 
@@ -10,8 +10,11 @@ Enemy::Enemy(Grid * gridRef, std::vector<Tile*> waypointsToVisit, Tile * startTi
 	m_startTile(startTile), 
 	m_rect(startTile->getRect()),
 	m_state(FSMState::WAITING_FOR_PATH),
-	m_taskId(-1)
+	m_taskId(-1),
+	m_targetWaypoint(nullptr),
+	m_colour(rand() % 255, rand() % 255, rand() % 255)
 {
+	m_targetWaypoint = getNextWaypoint(m_targetWaypoint);
 }
 
 void Enemy::Render(Renderer & r)
@@ -21,7 +24,7 @@ void Enemy::Render(Renderer & r)
 	case(FSMState::DEAD):
 		break;
 	default:
-		r.drawRect(m_rect, Colour(255));
+		r.drawRect(m_rect, m_colour);
 		break;
 	}
 }
@@ -42,12 +45,18 @@ void Enemy::Update(float dt)
 		}
 		break;
 	case(FSMState::CHASING_PLAYER):
+		//m_targetWaypoint = playerTile
+		m_currentTile->BeingTraversed(false);
 		break;
 	case(FSMState::WAITING_FOR_PATH):
 		if (m_taskId == -1)
 		{ 
-			m_previousWaypoint = getNextWaypoint(m_previousWaypoint);
-			m_taskId = TaskQueue::getInstance()->addJob(std::bind(AStar, m_gridRef, m_currentTile, m_previousWaypoint));
+			if (m_targetWaypoint == nullptr)
+			{
+				m_state = FSMState::CHASING_PLAYER;
+				break;
+			}
+			m_taskId = TaskQueue::getInstance()->addJob(std::bind(AStar, m_gridRef, m_currentTile, m_targetWaypoint));
 		}
 		else if (TaskQueue::getInstance()->jobFinished(m_taskId))
 		{
@@ -60,13 +69,20 @@ void Enemy::Update(float dt)
 	}
 }
 
+Rect Enemy::getRect()
+{
+	return m_rect;
+}
+
 void Enemy::Reset()
 {
 	m_currentTile = m_startTile;
 	m_rect = m_currentTile->getRect();
 	m_currentTilePath.clear();
 	m_targetTile = nullptr;
+	m_targetWaypoint = nullptr;
 	m_state = FSMState::WAITING_FOR_PATH;
+	m_targetWaypoint = getNextWaypoint(m_targetWaypoint);
 	m_taskId = -1;
 }
 
@@ -96,17 +112,25 @@ void Enemy::traverseTile(float dt)
 {
 	auto currentTilePos = m_currentTile->getPosition();
 	auto targetTilePos = m_targetTile->getPosition();
-	Point2D distanceVector = m_rect.pos + Point2D(-targetTilePos.first, -targetTilePos.second);
-	float sqDistUntilTargetBefore = (distanceVector.y * distanceVector.y + distanceVector.x * distanceVector.x);
+
 	m_rect.pos = m_rect.pos + (Point2D(targetTilePos.first - currentTilePos.first, targetTilePos.second - currentTilePos.second) * (dt / TIME_TO_TRAVERSE));
-	distanceVector = m_rect.pos + Point2D(-targetTilePos.first, -targetTilePos.second);
-	float sqDistUntilTargetAfter = (distanceVector.y * distanceVector.y + distanceVector.x * distanceVector.x);
-	if (sqDistUntilTargetAfter > sqDistUntilTargetBefore)
+	
+	Point2D distanceVector = m_rect.pos + Point2D(-currentTilePos.first, -currentTilePos.second);
+	float distFromPrevious = sqrt(distanceVector.y * distanceVector.y + distanceVector.x * distanceVector.x);
+	distanceVector = Point2D(targetTilePos.first, targetTilePos.second) + Point2D(-currentTilePos.first, -currentTilePos.second);;
+	float distBetweenTargetAndPrevious = sqrt(distanceVector.y * distanceVector.y + distanceVector.x * distanceVector.x);
+	if (distFromPrevious >= distBetweenTargetAndPrevious)
 	{
 		m_currentTile = m_targetTile;
-		m_rect.pos = Point2D(currentTilePos.first, currentTilePos.second);
+		m_rect.pos = Point2D(m_currentTile->getPosition().first, m_currentTile->getPosition().second);
 		m_targetTile = getNextTile(m_targetTile);
-		if (m_targetTile->BeingTraversed())
+		if (m_targetTile == nullptr)
+		{
+			m_currentTilePath.clear();
+			m_state = FSMState::WAITING_FOR_PATH;
+			m_targetWaypoint = getNextWaypoint(m_targetWaypoint);
+		}
+		else if (m_targetTile->BeingTraversed())
 		{
 			m_state = FSMState::WAITING;
 		}
@@ -114,11 +138,6 @@ void Enemy::traverseTile(float dt)
 		{
 			m_currentTile->BeingTraversed(false);
 			m_targetTile->BeingTraversed(true);
-		}
-		if (m_targetTile == nullptr)
-		{
-			m_currentTilePath.clear();
-			m_state = FSMState::WAITING_FOR_PATH;
 		}
 	}
 }

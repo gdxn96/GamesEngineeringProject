@@ -28,9 +28,6 @@ Game::Game(Size2D screenSize, Size2D worldSize) :
 	m_camera(new Camera2D(Rect(0, 0, screenSize.w, screenSize.h), 1)), m_screenSize(screenSize), 
 	m_worldSize(worldSize), m_jobId(-1)
 {
-	m_grid1->addWalls();
-	m_grid2->addWalls();
-	m_grid3->addWalls();
 	TaskQueue::getInstance()->spawnWorkers();
 	quit = false;
 	resetWorld(0, m_grid1, 1);
@@ -93,6 +90,8 @@ void Game::update()
 	for (std::vector<GameObject*>::iterator i = gameObjects.begin(); i != gameObjects.end(); i++) {
 		(*i)->Update(deltaTime);
 	}
+
+	m_grid->update(deltaTime);
 
 	//save the curent time for next frame
 	lastTime = currentTime;

@@ -15,7 +15,7 @@ public:
 
 	Point2D& operator+(Point2D rhs)
 	{
-		return Point2D(this->x + rhs.x, this->y + rhs.x);
+		return Point2D(this->x + rhs.x, this->y + rhs.y);
 	}
 
 	Point2D& operator/(float scale)
@@ -61,5 +61,16 @@ public:
 	Point2D getCentreCopy()
 	{
 		return  Point2D(this->pos.x + this->size.w / 2, this->pos.y + this->size.h / 2);
+	}
+
+	bool containsPoint(Point2D pt)
+	{
+		float x = pt.x;
+		float y = pt.y;
+		if (x < (this->pos.x + (.5*this->size.w)) && x >(this->pos.x - (.5*this->size.w)) &&
+			y < (this->pos.y + (.5*this->size.h)) && y >(this->pos.y - (.5*this->size.h)))
+			return true;
+		else
+			return false;
 	}
 };

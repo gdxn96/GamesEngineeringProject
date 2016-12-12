@@ -34,7 +34,6 @@ vector<Tile*>* AStar(const Grid * graph, Tile * start, Tile * goal)
 		{
 			continue;
 		}
-		current->setColour(Colour(0, 255, 0, 255));
 
 		if (current == goal)
 		{
@@ -62,5 +61,6 @@ vector<Tile*>* AStar(const Grid * graph, Tile * start, Tile * goal)
 		closed[current] = true;
 	}
 
+	//unsolvable path, should never happen on this map
 	return nullptr;
 }
