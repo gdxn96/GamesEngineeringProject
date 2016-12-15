@@ -63,5 +63,6 @@ vector<Tile*>* AStar(const Grid * graph, Tile * start, Tile * goal)
 	}
 
 	//unsolvable path if nullptr, should never happen on this map
+	SDL_assert(path != nullptr);
 	return path;
 }

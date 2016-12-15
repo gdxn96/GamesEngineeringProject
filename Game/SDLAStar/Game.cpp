@@ -6,7 +6,7 @@ using namespace std;
 #include "LTimer.h"
 #include "Game.h"
 
-const int SCREEN_FPS = 100;
+const int SCREEN_FPS = std::numeric_limits<int>::max();
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 void Game::resetWorld(int numNPCs, Grid* grid, float scale)
 {

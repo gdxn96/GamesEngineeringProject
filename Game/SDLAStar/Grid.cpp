@@ -192,7 +192,11 @@ void Grid::calculateWaypoints()
 	for (auto& tile : path)
 	{
 		tiles++;
-		if (tiles % 20 == 1)
+		if (tiles < (path.size() / 10)) //ignore first 10 percent of tiles
+		{
+			continue;
+		}
+		if (tiles % 10 == 1)
 		{
 			m_waypoints.push_back(tile); // every 10 tiles is a waypoint
 		}

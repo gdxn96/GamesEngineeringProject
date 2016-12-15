@@ -2,7 +2,7 @@
 #include "Enemy.h"
 
 Enemy::Enemy(Grid * gridRef, Player* player, std::vector<Tile*> waypointsToVisit, Tile * startTile) : 
-	TIME_TO_TRAVERSE(0.001f), 
+	TIME_TO_TRAVERSE(0.1f), 
 	m_gridRef(gridRef),
 	m_wayPointsToVisit(waypointsToVisit), 
 	m_targetTile(nullptr), 
