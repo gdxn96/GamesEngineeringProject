@@ -3,7 +3,7 @@
 
 TaskQueue * TaskQueue::m_instance = nullptr;
 
-TaskQueue::TaskQueue() : m_canConsume(SDL_CreateSemaphore(0)), m_queueLock(SDL_CreateMutex()), m_resultsLock(SDL_CreateMutex())
+TaskQueue::TaskQueue() : m_canConsume(SDL_CreateSemaphore(0)), m_queueLock(SDL_CreateMutex()), m_resultsLock(SDL_CreateMutex()), m_threadingEnabled(true)
 {
 }
 
@@ -110,5 +110,21 @@ void TaskQueue::removeJobById(int jobId)
 	{
 		m_jobs.erase(it); //remove from queue
 
+	}
+}
+
+void TaskQueue::runTasksSequentially()
+{
+	if (!m_threadingEnabled)
+	{
+		while (!m_jobs.empty())
+		{
+			auto& jobId_Job = consumeJob();
+			int jobId = jobId_Job.first;
+			auto job = jobId_Job.second;
+
+			void* result = (void*)job();
+			storeResults(jobId, result);
+		}
 	}
 }

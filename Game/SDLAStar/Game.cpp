@@ -124,6 +124,7 @@ void Game::loop()
 		inputManager.ProcessInput();
 
 		update();
+		TaskQueue::getInstance()->runTasksSequentially();
 		render();
 
 		int frameTicks = capTimer.getTicks();//time since start of frame

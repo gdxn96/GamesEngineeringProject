@@ -20,6 +20,7 @@ private:
 	int m_numJobs;
 
 public:
+	bool m_threadingEnabled;
 	TaskQueue();
 	SDL_mutex * getLock();
 	void spawnWorkers();
@@ -31,6 +32,7 @@ public:
 	void deleteResults(int jobId);
 	bool jobFinished(int jobId);
 	void removeJobById(int jobId);
+	void runTasksSequentially();
 
 	//*TaskQueue::addJob(std::bind(&Some_Class::Some_Method, &Some_object, ...Args)); 
 	//*Function must return a pointer and is assumed to be threadsafe
@@ -59,18 +61,21 @@ static int worker(void* ptr)
 	SDL_sem * canConsume = taskQueue->canConsume();
 	while (true)
 	{
-		SDL_SemWait(canConsume);
-		auto& jobId_Job = taskQueue->consumeJob();
-		int jobId = jobId_Job.first;
-		auto job = jobId_Job.second;
-		try
+		if (taskQueue->m_threadingEnabled)
 		{
-			void* result = (void*)job();
-			taskQueue->storeResults(jobId, result);
-		}
-		catch (...)
-		{
-			std::cout << "EARLY RETURN job: " << jobId << " worker: " << id << std::endl;
+			SDL_SemWait(canConsume);
+			auto& jobId_Job = taskQueue->consumeJob();
+			int jobId = jobId_Job.first;
+			auto job = jobId_Job.second;
+			try
+			{
+				void* result = (void*)job();
+				taskQueue->storeResults(jobId, result);
+			}
+			catch (...)
+			{
+				std::cout << "EARLY RETURN job: " << jobId << " worker: " << id << std::endl;
+			}
 		}
 	}
 }
