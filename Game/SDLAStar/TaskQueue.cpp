@@ -3,7 +3,7 @@
 
 TaskQueue * TaskQueue::m_instance = nullptr;
 
-TaskQueue::TaskQueue() : m_canConsume(SDL_CreateSemaphore(0)), m_queueLock(SDL_CreateMutex()), m_resultsLock(SDL_CreateMutex()), m_threadingEnabled(true)
+TaskQueue::TaskQueue() : m_canConsume(SDL_CreateSemaphore(0)), m_queueLock(SDL_CreateMutex()), m_resultsLock(SDL_CreateMutex()), m_threadingEnabled(false)
 {
 }
 
